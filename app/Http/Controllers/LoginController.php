@@ -78,7 +78,6 @@ class LoginController extends Controller
                     'followers' => $data->followers,
                     'following' => $data->following,
                     'created_at' => $data->created_at,
-                    'created_at' => $data->created_at,
                     'updated_at' => $data->updated_at,
                     'planName' => $data->plan->name
                 ]);
