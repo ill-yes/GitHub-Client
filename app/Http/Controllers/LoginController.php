@@ -12,6 +12,7 @@ namespace App\Http\Controllers;
 use App\Client\CallManager;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 /**
  * Class LoginController
@@ -19,52 +20,36 @@ use Illuminate\Http\Request;
  */
 class LoginController extends Controller
 {
-    private $callManager;
-
     /**
      * @param Request $request
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
-     * 
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function initLogin(Request $request)
     {
-        $this->callManager = new CallManager($request->get('username'), $request->get('password'));
-        SessionController::setLoginSession($this->callManager);
+        $callManager = new CallManager($request->get('username'), $request->get('password'));
+        $username = $callManager->getUsername();
 
-       return $this->usernameCall();
-    }
-
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
-     */
-    public function usernameCall()
-    {
-        if (!session()->exists('userLogin'))
-        {
-            return view('main');
-        }
-        $this->callManager = SessionController::getSession();
-        $username = $this->callManager->getUsername();
-
+        SessionController::setLoginSession($callManager);
         SessionController::setUsernameSession($username);
 
         return redirect(request()->session()->previousUrl());
     }
 
-    /**q
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+
+    /**
+     * @return View
      */
-    public function userInfoCall()
+    public function userInfoCall():View
     {
         if (!session()->exists('userLogin'))
         {
             return view('main');
         }
 
-        $this->callManager = SessionController::getSession();
-        if (isset($this->callManager))
+        $callManager = SessionController::getSession();
+        if (isset($callManager))
         {
-            $data = $this->callManager->getUserInfo();
+            $data = $callManager->getUserInfo();
 
             if (isset($data))
             {
@@ -91,21 +76,27 @@ class LoginController extends Controller
             }
 
         }
+        return view('pages.user');
     }
 
+    public function setValue ()
+    {
+        $test = "test";
+
+    }
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return View
      */
-    public function ownRepoCall()
+    public function ownRepoCall():View
     {
         if (!session()->exists('userLogin'))
         {
             return view('main');
         }
 
-        $this->callManager = SessionController::getSession();
-        if (isset($this->callManager)) {
-            $dataArray = $this->callManager->getUserOwnRepo();
+        $callManager = SessionController::getSession();
+        if (isset($callManager)) {
+            $dataArray = $callManager->getUserOwnRepo();
 
             if (isset($dataArray))
             {
@@ -130,18 +121,19 @@ class LoginController extends Controller
                     $allRepositories[] = $singleRepo;
                 }
 
-                return view('pages.user', [
+                return view('pages.repo', [
                     'repoDataArray' => $allRepositories
                 ]);
             }
             else
             {
-                return view('pages.user', [
+                return view('pages.repo', [
                     'error' => "Error!"
                 ]);
             }
 
         }
+        return view('pages.repo');
     }
 
 }

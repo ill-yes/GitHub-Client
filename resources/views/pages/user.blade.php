@@ -100,7 +100,6 @@
     </div>
 @endif
 
-
 @if(isset($repoDataArray))
     <div class="row">
         <div class="col-12">
@@ -148,11 +147,5 @@
         </div>
     </div>
 @endif
-
-
-
-
-
-
 
 @stop
