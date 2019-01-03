@@ -53,15 +53,13 @@
                     <input type="text" class="form-control" placeholder="Username" name="username" min="1" max="30">
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" placeholder="Password" name="password" min="1"
-                           max="255">
+                    <input type="password" class="form-control" placeholder="Password" name="password" min="1" max="255">
                 </div>
                 <button type="submit" class="btn btn-default">Submit</button>
             </form>
         @endif
         @if (session()->exists('username'))
-
-            <ul class="navbar-nav   ">
+            <ul class="navbar-nav">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ session()->get('username') }}
@@ -71,7 +69,6 @@
                 </div>
             </li>
             </ul>
-
         @endif
     </div>
 </nav>

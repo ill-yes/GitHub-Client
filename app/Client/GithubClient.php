@@ -9,6 +9,7 @@
 namespace App\Client;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 /**
  * Class GithubClient
@@ -50,15 +51,20 @@ class GithubClient
         curl_close($crl);
 
         return json_decode($response);*/
-
-
-        $client = new Client();
-        $response = $client->get(self::$URL . $endpoint,
-            [
-                'headers' => [
-                    'Authorization' => 'Basic ' . $this->auth,
-                ],
-            ]);
+        try
+        {
+            $client = new Client();
+            $response = $client->get(self::$URL . $endpoint,
+                [
+                    'headers' => [
+                        'Authorization' => 'Basic ' . $this->auth,
+                    ],
+                ]);
+        }
+        catch (RequestException $exception)
+        {
+            $response = $exception->getResponse();
+        }
 
         return $response;
     }
