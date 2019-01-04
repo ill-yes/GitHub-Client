@@ -43,7 +43,7 @@ class CallManager
             return $jsonData->login;
         }
         else {
-            return "";
+            return null;
         }
     }
 

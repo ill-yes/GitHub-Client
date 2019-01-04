@@ -11,7 +11,7 @@
 |
 */
 
-Route::view('/', 'main')->name('home');
+Route::view('/', 'pages.home')->name('home');
 Route::view('/login', 'pages.user')->name('login');
 
 Route::post('/login', 'LoginController@initLogin')->name('setLogin');

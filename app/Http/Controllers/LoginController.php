@@ -29,6 +29,10 @@ class LoginController extends Controller
         $callManager = new CallManager($request->get('username'), $request->get('password'));
         $username = $callManager->getUsername();
 
+        if ($username == null)
+        {
+            return view ('pages.home', ['failedLogin' => true]);
+        }
         SessionController::setLoginSession($callManager);
         SessionController::setUsernameSession($username);
 
@@ -43,7 +47,7 @@ class LoginController extends Controller
     {
         if (!session()->exists('userLogin'))
         {
-            return view('main');
+            return view('pages.home');
         }
 
         $callManager = SessionController::getSession();
@@ -79,11 +83,6 @@ class LoginController extends Controller
         return view('pages.user');
     }
 
-    public function setValue ()
-    {
-        $test = "test";
-
-    }
     /**
      * @return View
      */
@@ -91,7 +90,7 @@ class LoginController extends Controller
     {
         if (!session()->exists('userLogin'))
         {
-            return view('main');
+            return view('pages.home');
         }
 
         $callManager = SessionController::getSession();
