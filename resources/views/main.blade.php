@@ -34,14 +34,17 @@
         </a>
 
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item {{ Request::url() == url('/') ? 'active' : '' }}">
+            <li class="nav-item {{ Request::url() == url('/') ? 'active font-weight-normal' : '' }}">
                 <a class="nav-link" href="/">Home</a>
             </li>
-            <li class="nav-item {{ Request::url() == url('/user') ? 'active' : '' }}">
+            <li class="nav-item {{ Request::url() == url('/user') ? 'active font-weight-normal' : '' }}">
                 <a class="nav-link" href="/user">User</a>
             </li>
-            <li class="nav-item {{ Request::url() == url('/repository') ? 'active' : '' }}">
+            <li class="nav-item {{ Request::url() == url('/repository') ? 'active font-weight-normal' : '' }}">
                 <a class="nav-link" href="/repository">Repository</a>
+            </li>
+            <li class="nav-item {{ Request::url() == url('/branches') ? 'active font-weight-normal' : '' }}">
+                <a class="nav-link" href="/branches">Branches</a>
             </li>
         </ul>
 

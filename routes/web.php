@@ -21,4 +21,5 @@ Route::get('/logout', 'SessionController@deleteSession')->name('logout');
 // API CALLS
 Route::get('/user', 'LoginController@userInfoCall')->name('user');
 Route::get('/repository', 'LoginController@ownRepoCall')->name('repository');
+Route::get('/branches', 'LoginController@deadBranchesCall')->name('branches');
 

@@ -82,6 +82,43 @@ class CallManager
         }
     }
 
+    public function getPullRequests ()
+    {
+        $repo = 'php-pl';
+        $data = $this->client->requester('/repos/plentymarkets/'. $repo .'/pulls?state=closed&sort=updated&direction=desc&per_page=100');
+        $jsonData = $this->getDecode($data);
+
+        if ($data->getStatusCode() == 200)
+        {
+            return $jsonData;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public function getAllRepositories()
+    {
+        // TODO: Muss das noch rein?
+    }
+
+    public function checkBranchIfExists($branch)
+    {
+        $repo = 'php-pl';
+        $data = $this->client->requester('/repos/plentymarkets/'. $repo .'/branches/'. $branch);
+        //$jsonData = $this->getDecode($data);
+
+        if ($data->getStatusCode() == 200)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     /**
      * @param $data
      * @return mixed

@@ -24,7 +24,7 @@
                                 <h6><a href="{{ $html_url }}" target="_blank">{{ $html_url }}</a></h6>
                             </div>
                             <div class="mx-auto">
-                                <h7 class="d-block">Last update: {{ $updated_at }}</h7>
+                                <h7 class="d-block">Last update: {{ \Carbon\Carbon::parse($updated_at)->format('d-m-Y, H:i') }}</h7>
                                 <br>
                                 <h6 class="d-block">Followers: {{ $followers }}</h6>
                                 <h6 class="d-block">Following: {{ $following }}</h6>

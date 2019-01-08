@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 
 use App\Client\CallManager;
+use App\Services\FilterCallData;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -94,31 +95,13 @@ class LoginController extends Controller
         }
 
         $callManager = SessionController::getSession();
-        if (isset($callManager)) {
-            $dataArray = $callManager->getUserOwnRepo();
+        if (isset($callManager))
+        {
+            $repositories = $callManager->getUserOwnRepo();
 
-            if (isset($dataArray))
+            if (isset($repositories))
             {
-                $filter = ['name', 'private', 'html_url', 'created_at', 'updated_at', 'language', 'forks'];
-
-                $allRepositories = [];
-                foreach($dataArray AS $repo)
-                {
-                    $singleRepo = [];
-                    foreach ($filter as $value)
-                    {
-                        if ($value == 'created_at' || $value == 'updated_at')
-                        {
-                            $date = Carbon::createFromFormat(DATE_ISO8601, $repo->{$value})->format('d.m.Y');
-                            $singleRepo[$value] = $date;
-                        }
-                        else
-                        {
-                            $singleRepo[$value] = $repo->{$value};
-                        }
-                    }
-                    $allRepositories[] = $singleRepo;
-                }
+                $allRepositories = FilterCallData::filterOwnRepos($repositories);
 
                 return view('pages.repo', [
                     'repoDataArray' => $allRepositories
@@ -133,6 +116,40 @@ class LoginController extends Controller
 
         }
         return view('pages.repo');
+    }
+
+    /**
+     * @return View
+     */
+    public function deadBranchesCall():View
+    {
+        if (!session()->exists('userLogin'))
+        {
+            return view('pages.home');
+        }
+
+        $callManager = SessionController::getSession();
+        if (isset($callManager))
+        {
+            $pullRequests = $callManager->getPullRequests();
+
+            if (isset($pullRequests))
+            {
+                $branches = FilterCallData::filterPullRequestsByBranches($pullRequests, $callManager);
+
+                return view('pages.branch', [
+                    'branches' => $branches
+                ]);
+            }
+            else
+            {
+                return view('pages.branch', [
+                    'error' => "Error!"
+                ]);
+            }
+
+        }
+        return view('pages.branch');
     }
 
 }
