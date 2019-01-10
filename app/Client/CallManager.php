@@ -84,13 +84,35 @@ class CallManager
 
     public function getPullRequests ()
     {
-        $repo = 'php-pl';
-        $data = $this->client->requester('/repos/plentymarkets/'. $repo .'/pulls?state=closed&sort=updated&direction=desc&per_page=100');
-        $jsonData = $this->getDecode($data);
+        $repo = 'php-py';
 
-        if ($data->getStatusCode() == 200)
+        $page = 1;
+        $results = [];
+        do {
+            $data = $this->client->requester('/repos/plentymarkets/'. $repo .'/pulls?state=closed&sort=updated&direction=desc&per_page=100&page=' . $page);
+
+            $paginationString = $data->getHeaderLine('Link');
+            $jsonData = $this->getDecode($data);
+
+            foreach ($jsonData AS $pullRequest)
+            {
+                $pull['title'] = $pullRequest->title;
+                $pull['branch_name'] = $pullRequest->head->ref;
+                $pull['branch_commit_sha'] = $pullRequest->head->sha;
+                $pull['pr_link'] = $pullRequest->html_url;
+                $pull['merged_at'] = $pullRequest->merged_at;
+                $pull['user_login'] = $pullRequest->user->login;
+
+                $results[] = $pull;
+            }
+
+            $page++;
+        } while ($page < 3);
+        //} while (strpos($paginationString, 'rel="next"'));
+
+        if (isset($results))
         {
-            return $jsonData;
+            return $results;
         }
         else
         {
@@ -98,26 +120,45 @@ class CallManager
         }
     }
 
-    public function getAllRepositories()
+    public function getBranches()
     {
-        // TODO: Muss das noch rein?
-    }
+        /**
+         * TODO: Pagination schlecht geloest. Bessere Loesung finden! Einzige Alternative: String parsen.. auch shit!
+         * Filter "branch_name" muss in FilterCallData::Class gezogen werden
+         */
+        $repo = 'php-py';
 
-    public function checkBranchIfExists($branch)
-    {
-        $repo = 'php-pl';
-        $data = $this->client->requester('/repos/plentymarkets/'. $repo .'/branches/'. $branch);
-        //$jsonData = $this->getDecode($data);
+        $page = 1;
+        $results = [];
+        do {
+            $data = $this->client->requester('/repos/plentymarkets/'. $repo .'/branches?per_page=100&page=' . $page);
 
-        if ($data->getStatusCode() == 200)
+            $paginationString = $data->getHeaderLine('Link');
+            $jsonData = $this->getDecode($data);
+            foreach ($jsonData AS $branch)
+            {
+                $tmpBranch['name'] = $branch->name;
+                $tmpBranch['commit_sha'] = $branch->commit->sha;
+
+                $results[] = $tmpBranch;
+
+                //$results[$branch->name] = true;
+            }
+
+            $page++;
+        } while (strpos($paginationString, 'rel="next"'));
+
+
+        if (isset($results))
         {
-            return true;
+            return $results;
         }
         else
         {
-            return false;
+            return null;
         }
     }
+
 
     /**
      * @param $data

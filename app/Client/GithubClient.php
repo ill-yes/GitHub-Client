@@ -57,7 +57,7 @@ class GithubClient
             $response = $client->get(self::$URL . $endpoint,
                 [
                     'headers' => [
-                        'Authorization' => 'Basic ' . $this->auth,
+                        'Authorization' => 'Basic ' . $this->auth
                     ],
                 ]);
         }

@@ -9,12 +9,11 @@
 namespace App\Services;
 
 
-use App\Client\CallManager;
 use Carbon\Carbon;
 
 class FilterCallData
 {
-    static public function filterOwnRepos($repositories)
+    public static function filterOwnRepos($repositories)
     {
         $filter = ['name', 'private', 'html_url', 'created_at', 'updated_at', 'language', 'forks'];
 
@@ -39,25 +38,35 @@ class FilterCallData
         return $allRepositories;
     }
 
-    static public function filterPullRequestsByBranches($pullRequests, CallManager $callManager)
-    {
-        $branches = [];
-        foreach ($pullRequests as $pull)
-        {
-            if (isset($pull->merged_at))
-            {
-                $branch['name'] = $pull->head->ref;
-                $branch['pr_link'] = $pull->html_url;
-                $branch['merged_at'] = $pull->merged_at;
-                //$callManager->checkBranchIfExists($pull->head->ref);
-                $branch['exists'] = $callManager->checkBranchIfExists($pull->head->ref);
-                //$branch['exists'] = true;
 
-                $branches[] = $branch;
+    public static function filterBranchesWithPullRequests(?array $pullRequests, ?array $branches)
+    {
+        $filteredBranches = [];
+
+        foreach ($pullRequests AS $pull)
+        {
+            /*if (isset($branches[$pull['branch_name']]) && isset($pull['merged_at']) )
+            {
+                $filteredBranches[] = $pull;
+            }*/
+            foreach ($branches AS $branch)
+            {
+                if ($pull['branch_name'] == $branch['name']
+                    && $pull['branch_commit_sha'] == $branch['commit_sha']
+                    && isset($pull['merged_at']))
+                {
+                    $filteredBranches[] = $pull;
+                }
             }
         }
+        //$filteredBranches = array_intersect_key($pullRequests['branch_name'], $branches['name']);
 
-        return $branches;
+        /*$activeItems = array_uintersect($pullRequests, $pullRequests['branch_name'], function($pullRequests, $branches) {
+            return ($pullRequests['branch_name'] - $branches['name']);
+        });
+        dd($activeItems);*/
+        return $filteredBranches;
+
     }
 
 }

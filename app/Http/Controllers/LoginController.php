@@ -132,13 +132,16 @@ class LoginController extends Controller
         if (isset($callManager))
         {
             $pullRequests = $callManager->getPullRequests();
+            $branches = $callManager->getBranches();
 
-            if (isset($pullRequests))
+            if (isset($pullRequests) && isset($branches))
             {
-                $branches = FilterCallData::filterPullRequestsByBranches($pullRequests, $callManager);
+                $filteredBranches = FilterCallData::filterBranchesWithPullRequests($pullRequests, $branches);
+
+                //dd($filteredBranches);
 
                 return view('pages.branch', [
-                    'branches' => $branches
+                    'branches' => $filteredBranches
                 ]);
             }
             else

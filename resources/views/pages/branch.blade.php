@@ -18,25 +18,23 @@
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Pull Request</th>
+                                        <th scope="col">Title</th>
+                                        <th scope="col">Branch name</th>
+                                        <th scope="col">Author</th>
                                         <th scope="col">Merged at</th>
-                                        <th scope="col">Exists</th>
+                                        <th scope="col">Pull Request</th>
                                     </tr>
                                     </thead>
 
                                     <tbody>
                                         @foreach ($branches as $branch)
                                             <tr>
-                                                <td><b>{{ $branch['name'] }}</b></td>
-                                                <td><a href="{{ $branch['pr_link'] }}" target="_blank">Link</a></td>
+                                                <td><b>{{ $branch['title'] }}</b></td>
+                                                <td><b>{{ $branch['branch_name'] }}</b></td>
+                                                <td>{{ $branch['user_login'] }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($branch['merged_at'])->format('d-m-Y H:i') }}</td>
                                                 <td>
-                                                    @if($branch['exists'])
-                                                        <span class="badge badge-pill badge-danger">yes</span>
-                                                    @else($branch['exists'])
-                                                        <span class="badge badge-pill badge-success">no</span>
-                                                    @endif
+                                                    <a href="{{ $branch['pr_link'] }}" target="_blank" class="badge badge-danger">Link</a>
                                                 </td>
                                             </tr>
                                         @endforeach
