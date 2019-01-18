@@ -39,7 +39,7 @@ class FilterCallData
     }
 
 
-    public static function filterBranchesWithPullRequests(?array $pullRequests, ?array $branches)
+    public static function filterBranchesWithPullRequests(array $pullRequests, array $branches)
     {
         $filteredBranches = [];
 
@@ -49,13 +49,15 @@ class FilterCallData
             {
                 $filteredBranches[] = $pull;
             }*/
-            foreach ($branches AS $branch)
+            if (isset($pull['merged_at']))
             {
-                if ($pull['branch_name'] == $branch['name']
-                    && $pull['branch_commit_sha'] == $branch['commit_sha']
-                    && isset($pull['merged_at']))
+                foreach ($branches AS $branch)
                 {
-                    $filteredBranches[] = $pull;
+                    if ($pull['branch_name'] == $branch['name']
+                        && $pull['branch_commit_sha'] == $branch['commit_sha'])
+                    {
+                        $filteredBranches[] = $pull;
+                    }
                 }
             }
         }

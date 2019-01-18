@@ -117,7 +117,10 @@ class LoginController extends Controller
         return view('pages.repo');
     }
 
-    public function branchView()
+    /**
+     * @return View
+     */
+    public function branchView():View
     {
         if (!session()->exists('userLogin'))
         {
@@ -127,6 +130,10 @@ class LoginController extends Controller
         return view('pages.branch');
     }
 
+    /**
+     * @param Request $request
+     * @return View
+     */
     public function branchesOfRepo (Request $request)
     {
         $repo = $request->get('repository_name');
@@ -134,7 +141,10 @@ class LoginController extends Controller
         
         return $this->deadBranchesCall($repo, $pages);
     }
+
     /**
+     * @param $repo
+     * @param $pages
      * @return View
      */
     public function deadBranchesCall($repo, $pages):View
