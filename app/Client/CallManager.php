@@ -82,10 +82,8 @@ class CallManager
         }
     }
 
-    public function getPullRequests ()
+    public function getPullRequests (String $repo, int $endPage)
     {
-        $repo = 'php-py';
-
         $page = 1;
         $results = [];
         do {
@@ -107,7 +105,9 @@ class CallManager
             }
 
             $page++;
-        } while ($page < 3);
+        } while (($endPage == 0) ? strpos($paginationString, 'rel="next"') : $page < $endPage);
+
+        //} while ($page < 1);
         //} while (strpos($paginationString, 'rel="next"'));
 
         if (isset($results))
@@ -120,13 +120,12 @@ class CallManager
         }
     }
 
-    public function getBranches()
+    public function getBranches($repo)
     {
         /**
          * TODO: Pagination schlecht geloest. Bessere Loesung finden! Einzige Alternative: String parsen.. auch shit!
          * Filter "branch_name" muss in FilterCallData::Class gezogen werden
          */
-        $repo = 'php-py';
 
         $page = 1;
         $results = [];
@@ -141,8 +140,6 @@ class CallManager
                 $tmpBranch['commit_sha'] = $branch->commit->sha;
 
                 $results[] = $tmpBranch;
-
-                //$results[$branch->name] = true;
             }
 
             $page++;

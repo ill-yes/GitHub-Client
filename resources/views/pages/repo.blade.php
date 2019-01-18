@@ -2,7 +2,9 @@
 @section('content')
 
 @if(isset($error))
-{{ $error }}
+    <div class="alert alert-danger" role="alert">
+        <div style="text-align: center"><b>Error: {{ $error }}</b></div>
+    </div>
 @endif
 
 @if(isset($repoDataArray))

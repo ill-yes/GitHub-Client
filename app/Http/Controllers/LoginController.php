@@ -11,7 +11,6 @@ namespace App\Http\Controllers;
 
 use App\Client\CallManager;
 use App\Services\FilterCallData;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -118,27 +117,46 @@ class LoginController extends Controller
         return view('pages.repo');
     }
 
-    /**
-     * @return View
-     */
-    public function deadBranchesCall():View
+    public function branchView()
     {
         if (!session()->exists('userLogin'))
         {
             return view('pages.home');
         }
 
+        return view('pages.branch');
+    }
+
+    public function branchesOfRepo (Request $request)
+    {
+        $repo = $request->get('repository_name');
+        $pages = (int) $request->get('amount_of_pages');
+        
+        return $this->deadBranchesCall($repo, $pages);
+    }
+    /**
+     * @return View
+     */
+    public function deadBranchesCall($repo, $pages):View
+    {
+        if (!session()->exists('userLogin'))
+        {
+            return view('pages.home');
+        }
+        if (!isset($repo) || !isset($pages))
+        {
+            return view('pages.branch');
+        }
+
         $callManager = SessionController::getSession();
         if (isset($callManager))
         {
-            $pullRequests = $callManager->getPullRequests();
-            $branches = $callManager->getBranches();
+            $branches = $callManager->getBranches($repo);
+            $pullRequests = $callManager->getPullRequests($repo, $pages);
 
             if (isset($pullRequests) && isset($branches))
             {
                 $filteredBranches = FilterCallData::filterBranchesWithPullRequests($pullRequests, $branches);
-
-                //dd($filteredBranches);
 
                 return view('pages.branch', [
                     'branches' => $filteredBranches
@@ -147,7 +165,7 @@ class LoginController extends Controller
             else
             {
                 return view('pages.branch', [
-                    'error' => "Error!"
+                    'error' => "Pull Requests or Branches - Call failed!"
                 ]);
             }
 
