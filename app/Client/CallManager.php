@@ -73,11 +73,43 @@ class CallManager
         $data = $this->client->requester('/users/' . $this->user->getUsername() . '/repos');
         $jsonData = $this->getDecode($data);
 
-        if ($data->getStatusCode() == 200)
+        if (isset($jsonData))
         {
             return $jsonData;
         }
-        else {
+        else
+        {
+            return null;
+        }
+    }
+
+    public function getOrgaRepo ()
+    {
+        $page = 1;
+        $results = [];
+        $organisation = 'plentymarkets';
+
+        do {
+            $data = $this->client->requester('/orgs/' . $organisation . '/repos?page=' . $page);
+            $paginationString = $data->getHeaderLine('Link');
+            $jsonData = $this->getDecode($data);
+
+            foreach ($jsonData AS $orgaRepo)
+            {
+                $results[$orgaRepo->name] = true;
+            }
+
+            $page++;
+        } while (strpos($paginationString, 'rel="next"'));
+
+        ksort($results);
+
+        if (isset($results))
+        {
+            return $results;
+        }
+        else
+        {
             return null;
         }
     }

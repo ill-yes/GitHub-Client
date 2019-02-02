@@ -16,18 +16,35 @@
 
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-                            <input type="text" class="form-control mb-2 mr-sm-2" name="repository_name" required
-                                   placeholder="Repository">
+                            {{--<div class="form-group">--}}
+                                {{--<input type="text" class="form-control mb-2 mr-sm-2" name="repository_name" required--}}
+                                    {{--placeholder="Repository">--}}
+                            {{--</div>--}}
 
-                            <div class="input-group mb-2 mr-sm-2">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">0 = all</div>
-                                </div>
-                                <input type="number" class="form-control" name="amount_of_pages" required
-                                       placeholder="Pages (1 = 100PR)">
+                            <div class="form-group" style=" margin-right: 5px">
+                                <select class="form-control" name="repository_name">
+                                    @if(isset($orgaRepo))
+                                        @foreach ($orgaRepo as $key=>$value)
+                                            <option value={{ $key }}>{{ $key }}</option>
+                                        @endforeach
+                                    @else
+                                        <option>Kein Repo gefunden!</option>
+                                    @endif
+                                </select>
                             </div>
 
-                            <button type="submit" class="btn btn-primary mb-2">Submit</button>
+                            <div class="form-group" style=" margin-right: 15px">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">0 = all</div>
+                                    </div>
+                                    <input type="number" class="form-control" name="amount_of_pages" required
+                                           placeholder="Pages (1 = 100PR)">
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+
                         </form>
                     </div>
                 </div>

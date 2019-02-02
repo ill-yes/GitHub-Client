@@ -38,7 +38,6 @@ class FilterCallData
         return $allRepositories;
     }
 
-
     public static function filterBranchesWithPullRequests(array $pullRequests, array $branches)
     {
         $filteredBranches = [];

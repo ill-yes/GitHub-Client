@@ -117,6 +117,25 @@ class LoginController extends Controller
         return view('pages.repo');
     }
 
+
+    public function orgaRepoCall()
+    {
+        $callManager = SessionController::getSession();
+        if (isset($callManager))
+        {
+            $orgaRepo = $callManager->getOrgaRepo();
+
+            if (isset($orgaRepo))
+            {
+                return $orgaRepo;
+            }
+            else
+            {
+                return null;
+            }
+        }
+    }
+
     /**
      * @return View
      */
@@ -127,7 +146,11 @@ class LoginController extends Controller
             return view('pages.home');
         }
 
-        return view('pages.branch');
+        $orgaRepo = $this->orgaRepoCall();
+
+        return view('pages.branch', [
+            'orgaRepo' => $orgaRepo
+        ] );
     }
 
     /**
