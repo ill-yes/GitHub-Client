@@ -23,5 +23,5 @@ Route::get('/user', 'LoginController@userInfoCall')->name('user');
 Route::get('/repository', 'LoginController@ownRepoCall')->name('repository');
 
 Route::get('/branches', 'LoginController@branchView')->name('branches');
-Route::post('/branches', 'LoginController@branchesOfRepo')->name('setBranches');
+Route::post('/branches', 'LoginController@deadBranchesCall')->name('getDeadBranches');
 

@@ -153,47 +153,33 @@ class LoginController extends Controller
         ] );
     }
 
-    /**
-     * @param Request $request
-     * @return View
-     */
-    public function branchesOfRepo (Request $request)
-    {
-        $repo = $request->get('repository_name');
-        $pages = (int) $request->get('amount_of_pages');
-        
-        return $this->deadBranchesCall($repo, $pages);
-    }
 
-    /**
-     * @param $repo
-     * @param $pages
-     * @return View
-     */
-    public function deadBranchesCall($repo, $pages):View
+    public function deadBranchesCall(Request $request)
     {
+        $repository = $request->get('repository');
+        $pagination = (int) $request->get('pagination');
+
         if (!session()->exists('userLogin'))
         {
             return view('pages.home');
         }
-        if (!isset($repo) || !isset($pages))
+        if (!isset($repository) || !isset($pagination))
         {
             return view('pages.branch');
         }
 
         $callManager = SessionController::getSession();
+
         if (isset($callManager))
         {
-            $branches = $callManager->getBranches($repo);
-            $pullRequests = $callManager->getPullRequests($repo, $pages);
+            $branches = $callManager->getBranches($repository);
+            $pullRequests = $callManager->getPullRequests($repository, $pagination);
 
             if (isset($pullRequests) && isset($branches))
             {
                 $filteredBranches = FilterCallData::filterBranchesWithPullRequests($pullRequests, $branches);
 
-                return view('pages.branch', [
-                    'branches' => $filteredBranches
-                ]);
+                return response($filteredBranches);
             }
             else
             {

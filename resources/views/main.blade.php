@@ -84,5 +84,7 @@
 
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="{{ asset('js/app.js') }}"></script>
+@yield('js')
+
 </body>
 </html>

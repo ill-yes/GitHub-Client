@@ -8,6 +8,8 @@
 
 namespace App\Client;
 
+use Carbon\Carbon;
+
 /**
  * Class CallManager
  * @package App\Client
@@ -130,7 +132,7 @@ class CallManager
                 $pull['branch_name'] = $pullRequest->head->ref;
                 $pull['branch_commit_sha'] = $pullRequest->head->sha;
                 $pull['pr_link'] = $pullRequest->html_url;
-                $pull['merged_at'] = $pullRequest->merged_at;
+                $pull['merged_at'] = Carbon::parse($pullRequest->merged_at)->format('d-m-Y H:i');
                 $pull['user_login'] = $pullRequest->user->login;
 
                 $results[] = $pull;

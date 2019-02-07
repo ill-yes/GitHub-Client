@@ -1,5 +1,6 @@
 @extends('main')
 @section('content')
+<meta name="_token" content="{{csrf_token()}}" />
 
 @if(isset($error))
     <div class="alert alert-danger" role="alert">
@@ -11,24 +12,18 @@
     <div class="col-12">
             <div class="card-body">
                 <div class="row">
+
                     <div class="col-12">
-                        <form class="form-inline float-right" method="POST" action="{{ route('setBranches') }}">
-
-                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-
-                            {{--<div class="form-group">--}}
-                                {{--<input type="text" class="form-control mb-2 mr-sm-2" name="repository_name" required--}}
-                                    {{--placeholder="Repository">--}}
-                            {{--</div>--}}
+                        <form class="form-inline float-right">
 
                             <div class="form-group" style=" margin-right: 5px">
-                                <select class="form-control" name="repository_name">
+                                <select class="form-control" id="repository_name">
                                     @if(isset($orgaRepo))
                                         @foreach ($orgaRepo as $key=>$value)
                                             <option value={{ $key }}>{{ $key }}</option>
                                         @endforeach
                                     @else
-                                        <option>Kein Repo gefunden!</option>
+                                        <option>No repository found!</option>
                                     @endif
                                 </select>
                             </div>
@@ -37,12 +32,15 @@
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">0 = all</div>
                                     </div>
-                                    <input type="number" class="form-control" name="amount_of_pages" required
+                                    <input type="number" class="form-control" id="amount_of_pages" required
                                            placeholder="Pages (1 = 100PR)">
                             </div>
 
                             <div class="form-group">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button id="submit" class="btn btn-primary">
+                                    <span id="submitText" style="display: block;">Submit</span>
+                                    <span id="submitLoading" style="display: none;"><i class="fas fa-spinner fa-spin"></i></span>
+                                </button>
                             </div>
 
                         </form>
@@ -54,7 +52,7 @@
 </div>
 
 
-@if(isset($branches))
+@if(isset($branches) || true)
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -62,43 +60,89 @@
                     <div class="row">
                         <div class="col-12">
                             <span class="tab-content ml-1" id="myTabContent">
-
-
-                                <table class="table table-striped">
+                                <table id="branches" class="table table-striped">
                                     <thead>
-                                    <tr>
-                                        <th scope="col">Title</th>
-                                        <th scope="col">Branch name</th>
-                                        <th scope="col">Author</th>
-                                        <th scope="col">Merged at</th>
-                                        <th scope="col">Pull Request</th>
-                                    </tr>
+                                        <tr>
+                                            <th scope="col">Title</th>
+                                            <th scope="col">Branch name</th>
+                                            <th scope="col">Author</th>
+                                            <th scope="col">Merged at</th>
+                                            <th scope="col">Pull Request</th>
+                                        </tr>
                                     </thead>
-
-                                    <tbody>
-                                        @foreach ($branches as $branch)
-                                            <tr>
-                                                <td><b>{{ $branch['title'] }}</b></td>
-                                                <td><b>{{ $branch['branch_name'] }}</b></td>
-                                                <td>{{ $branch['user_login'] }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($branch['merged_at'])->format('d-m-Y H:i') }}</td>
-                                                <td>
-                                                    <a href="{{ $branch['pr_link'] }}" target="_blank" class="badge badge-danger">Link</a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
                                 </table>
-                            </div>
+
+                            </span>
                         </div>
                     </div>
-
-
                 </div>
-
             </div>
         </div>
     </div>
 @endif
 
 @stop
+
+@section('js')
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="http://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+
+        <script>
+        jQuery(document).ready(function(){
+            jQuery('#submit').click(function(e){
+                e.preventDefault();
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                        url: "{{ route('getDeadBranches') }}",
+                        method: 'post',
+                        dataType: 'json',
+                        data: {
+                            repository: jQuery('#repository_name').val(),
+                            pagination: jQuery('#amount_of_pages').val()
+                        },
+                        beforeSend: function() {
+                            toggledisplay(document.getElementById("submitText"));
+                            toggledisplay(document.getElementById("submitLoading"));
+                            document.getElementById("submit").disabled = true;
+
+                        },
+                        complete: function(){
+                            toggledisplay(document.getElementById("submitText"));
+                            toggledisplay(document.getElementById("submitLoading"));
+                            document.getElementById("submit").disabled = false;
+                        },
+                        success: function(result){
+                            /*jQuery('.alert').show();
+                            jQuery('.alert').html("Success!");*/
+
+                            $('#branches').DataTable().clear();
+                            $('#branches').DataTable( {
+                                "data": result,
+                                "destroy": true,
+                                "searching": true,
+                                "paging": false,
+                                "columns": [
+                                    { "data": "title" },
+                                    { "data": "branch_name" },
+                                    { "data": "user_login" },
+                                    { "data": "merged_at" },
+                                    { "data": "pr_link" }
+                                ]});
+                        }
+                });
+            });
+            function toggledisplay(elementID)
+            {
+                if (elementID.style.display === "none") {
+                    elementID.style.display = "block";
+                } else {
+                    elementID.style.display = "none";
+                }
+            }
+        });
+    </script>
+@endsection
