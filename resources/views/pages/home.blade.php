@@ -2,9 +2,9 @@
 @section('content')
 
 <div class="card-body">
-    @if(isset($failedLogin))
+    @if(isset($error))
         <div class="alert alert-danger" role="alert">
-            <div style="text-align: center"><b>Fehler beim Anmelden!</b></div>
+            <div style="text-align: center"><b>Error: {{ $error }}</b></div>
         </div>
     @endif
     <div class="row">

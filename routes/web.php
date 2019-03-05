@@ -25,3 +25,4 @@ Route::get('/repository', 'LoginController@ownRepoCall')->name('repository');
 Route::get('/branches', 'LoginController@branchView')->name('branches');
 Route::post('/branches', 'LoginController@deadBranchesCall')->name('getDeadBranches');
 
+Route::get('/pr-state', 'LoginController@prStateCall')->name('pr-state');

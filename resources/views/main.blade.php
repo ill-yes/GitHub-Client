@@ -38,13 +38,16 @@
                 <a class="nav-link" href="/">Home</a>
             </li>
             <li class="nav-item {{ Request::url() == url('/user') ? 'active font-weight-normal' : '' }}">
-                <a class="nav-link" href="/user">User</a>
+                <a class="nav-link" href="{{ route('user') }}">User</a>
             </li>
             <li class="nav-item {{ Request::url() == url('/repository') ? 'active font-weight-normal' : '' }}">
-                <a class="nav-link" href="/repository">Repository</a>
+                <a class="nav-link" href="{{ route('repository') }}">Repository</a>
             </li>
             <li class="nav-item {{ Request::url() == url('/branches') ? 'active font-weight-normal' : '' }}">
-                <a class="nav-link" href="/branches">Branches</a>
+                <a class="nav-link" href="{{ route('branches') }}">Branches</a>
+            </li>
+            <li class="nav-item {{ Request::url() == url('/pr-state') ? 'active font-weight-normal' : '' }}">
+                <a class="nav-link" href="{{ route('pr-state') }}">PR State</a>
             </li>
         </ul>
 

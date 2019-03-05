@@ -21,18 +21,22 @@ use Illuminate\View\View;
 class LoginController extends Controller
 {
     /**
+     * Logic for login
      * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|View
      */
     public function initLogin(Request $request)
     {
         $callManager = new CallManager($request->get('username'), $request->get('password'));
         $username = $callManager->getUsername();
 
-        if ($username == null)
+        if (!isset($username))
         {
-            return view ('pages.home', ['failedLogin' => true]);
+            return view ('pages.home', [
+                'error' => "Login failed!"
+            ]);
         }
+
         SessionController::setLoginSession($callManager);
         SessionController::setUsernameSession($username);
 
@@ -41,6 +45,7 @@ class LoginController extends Controller
 
 
     /**
+     * Logic for "user"-tab
      * @return View
      */
     public function userInfoCall():View
@@ -75,15 +80,21 @@ class LoginController extends Controller
             else
             {
                 return view('pages.user', [
-                    'error' => "Error!"
+                    'error' => "Can't retrieve user information!"
                 ]);
             }
 
         }
-        return view('pages.user');
+        else
+        {
+            return view('pages.user', [
+                'error' => "No session found!"
+            ]);
+        }
     }
 
     /**
+     * Logic for "repository"-tab
      * @return View
      */
     public function ownRepoCall():View
@@ -109,34 +120,22 @@ class LoginController extends Controller
             else
             {
                 return view('pages.repo', [
-                    'error' => "Error!"
+                    'error' => "No repositories found!"
                 ]);
             }
 
         }
-        return view('pages.repo');
-    }
-
-
-    public function orgaRepoCall()
-    {
-        $callManager = SessionController::getSession();
-        if (isset($callManager))
+        else
         {
-            $orgaRepo = $callManager->getOrgaRepo();
-
-            if (isset($orgaRepo))
-            {
-                return $orgaRepo;
-            }
-            else
-            {
-                return null;
-            }
+            return view('pages.repo', [
+                'error' => "No session found!"
+            ]);
         }
     }
 
+
     /**
+     * Init logic for "branches"-tab
      * @return View
      */
     public function branchView():View
@@ -146,14 +145,38 @@ class LoginController extends Controller
             return view('pages.home');
         }
 
-        $orgaRepo = $this->orgaRepoCall();
+        $callManager = SessionController::getSession();
+        if (isset($callManager))
+        {
+            $orgaRepo = $callManager->getOrgaRepo();
 
-        return view('pages.branch', [
-            'orgaRepo' => $orgaRepo
-        ] );
+            if (isset($orgaRepo))
+            {
+                return view('pages.branch', [
+                    'orgaRepo' => $orgaRepo
+                ]);
+            }
+            else
+            {
+                return view('pages.branch', [
+                    'error' => "Can't get list of repositories!"
+                ] );
+            }
+        }
+        else
+        {
+            return view('pages.branch', [
+                'error' => "No session found!"
+            ]);
+        }
     }
 
 
+    /**
+     * Request logic for "branches"-tab
+     * @param Request $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|View
+     */
     public function deadBranchesCall(Request $request)
     {
         $repository = $request->get('repository');
@@ -165,7 +188,9 @@ class LoginController extends Controller
         }
         if (!isset($repository) || !isset($pagination))
         {
-            return view('pages.branch');
+            return view('pages.branch', [
+                'error' => "Repository or pagination not set!"
+            ]);
         }
 
         $callManager = SessionController::getSession();
@@ -189,7 +214,33 @@ class LoginController extends Controller
             }
 
         }
-        return view('pages.branch');
+        else
+        {
+            return view('pages.branch', [
+                'error' => "No session found!"
+            ]);
+        }
     }
 
+    public function prStateCall():View
+    {
+        if (!session()->exists('userLogin'))
+        {
+            return view('pages.home');
+        }
+
+        $callManager = SessionController::getSession();
+        if (isset($callManager))
+        {
+            // do something
+
+            return view('pages.pr-state');
+        }
+        else
+        {
+            return view('pages.pr-state', [
+                'error' => "No session found!"
+            ]);
+        }
+    }
 }

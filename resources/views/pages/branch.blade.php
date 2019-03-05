@@ -52,34 +52,31 @@
 </div>
 
 
-@if(isset($branches) || true)
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-12">
-                            <span class="tab-content ml-1" id="myTabContent">
-                                <table id="branches" class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Title</th>
-                                            <th scope="col">Branch name</th>
-                                            <th scope="col">Author</th>
-                                            <th scope="col">Merged at</th>
-                                            <th scope="col">Pull Request</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-
-                            </span>
-                        </div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <span class="tab-content ml-1" id="myTabContent">
+                            <table id="branches" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Title</th>
+                                        <th scope="col">Branch name</th>
+                                        <th scope="col">Author</th>
+                                        <th scope="col">Merged at</th>
+                                        <th scope="col">Pull Request</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-@endif
+</div>
 
 @stop
 
@@ -105,14 +102,14 @@
                             pagination: jQuery('#amount_of_pages').val()
                         },
                         beforeSend: function() {
-                            toggledisplay(document.getElementById("submitText"));
-                            toggledisplay(document.getElementById("submitLoading"));
+                            toggleDisplay(document.getElementById("submitText"));
+                            toggleDisplay(document.getElementById("submitLoading"));
                             document.getElementById("submit").disabled = true;
 
                         },
                         complete: function(){
-                            toggledisplay(document.getElementById("submitText"));
-                            toggledisplay(document.getElementById("submitLoading"));
+                            toggleDisplay(document.getElementById("submitText"));
+                            toggleDisplay(document.getElementById("submitLoading"));
                             document.getElementById("submit").disabled = false;
                         },
                         success: function(result){
@@ -130,12 +127,16 @@
                                     { "data": "branch_name" },
                                     { "data": "user_login" },
                                     { "data": "merged_at" },
-                                    { "data": "pr_link" }
+                                    { "data": "pr_link" ,
+                                        "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                                            $(nTd).html("<a href='"+oData.pr_link+"'>"+oData.pr_link+"</a>");
+                                        }
+                                    }
                                 ]});
                         }
                 });
             });
-            function toggledisplay(elementID)
+            function toggleDisplay(elementID)
             {
                 if (elementID.style.display === "none") {
                     elementID.style.display = "block";
