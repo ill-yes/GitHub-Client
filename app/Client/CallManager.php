@@ -16,6 +16,10 @@ use Carbon\Carbon;
  */
 class CallManager
 {
+    const STABLE = 'stable7';
+    const EARLY = 'early';
+    const BETA = 'beta7';
+
     private $user;
     private $client;
 
@@ -121,7 +125,8 @@ class CallManager
         $page = 1;
         $results = [];
         do {
-            $data = $this->client->requester('/repos/plentymarkets/'. $repo .'/pulls?state=closed&sort=updated&direction=desc&per_page=100&page=' . $page);
+            $data = $this->client->requester('/repos/plentymarkets/'. $repo .'/pulls?state=closed&sort=updated&direction=desc&per_page=50&page=' . $page);
+            // todo: per page parameter abaendern!
 
             $paginationString = $data->getHeaderLine('Link');
             $jsonData = $this->getDecode($data);
@@ -129,11 +134,16 @@ class CallManager
             foreach ($jsonData AS $pullRequest)
             {
                 $pull['title'] = $pullRequest->title;
+                $pull['pr_link'] = $pullRequest->html_url;
+
                 $pull['branch_name'] = $pullRequest->head->ref;
                 $pull['branch_commit_sha'] = $pullRequest->head->sha;
-                $pull['pr_link'] = $pullRequest->html_url;
+
                 $pull['merged_at'] = Carbon::parse($pullRequest->merged_at)->format('d-m-Y H:i');
+                $pull['merge_commit_sha'] = $pullRequest->merge_commit_sha;
+
                 $pull['user_login'] = $pullRequest->user->login;
+                $pull['user_url'] = $pullRequest->user->html_url;
 
                 $results[] = $pull;
             }
@@ -158,6 +168,7 @@ class CallManager
     {
         /**
          * TODO: Pagination schlecht geloest. Bessere Loesung finden! Einzige Alternative: String parsen.. auch shit!
+         * todo: pagination-doWhile als abstrakt auslagern
          * Filter "branch_name" muss in FilterCallData::Class gezogen werden
          */
 
@@ -190,6 +201,53 @@ class CallManager
         }
     }
 
+    public function compareCommitWithBranch($repo, $mergedCommitSha)
+    {
+        $data = $this->client->requester('/repos/plentymarkets/' . $repo . '/compare/' . self::STABLE . '...' . $mergedCommitSha);
+        $jsonData = $this->getDecode($data);
+
+        if ($jsonData->status == 'behind' || $jsonData->status == 'identical') return self::STABLE;
+
+        $data = $this->client->requester('/repos/plentymarkets/' . $repo . '/compare/' . self::EARLY . '...' . $mergedCommitSha);
+        $jsonData = $this->getDecode($data);
+
+        if ($jsonData->status == 'behind' || $jsonData->status == 'identical') return self::EARLY;
+
+        $data = $this->client->requester('/repos/plentymarkets/' . $repo . '/compare/' . self::BETA . '...' . $mergedCommitSha);
+        $jsonData = $this->getDecode($data);
+
+        if ($jsonData->status == 'behind' || $jsonData->status == 'identical') return self::BETA;
+
+        return null;
+    }
+
+    public function getTeamMembers($teamId)
+    {
+        $page = 1;
+        $members = [];
+        do {
+            $data = $this->client->requester('/teams/' . $teamId . '/members');
+
+            $paginationString = $data->getHeaderLine('Link');
+            $jsonData = $this->getDecode($data);
+
+            foreach ($jsonData AS $member)
+            {
+                $members[$member->login] = true;
+            }
+
+            $page++;
+        } while (strpos($paginationString, 'rel="next"'));
+
+        if (isset($members))
+        {
+            return $members;
+        }
+        else
+        {
+            return null;
+        }
+    }
 
     /**
      * @param $data

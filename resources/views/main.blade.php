@@ -46,8 +46,8 @@
             <li class="nav-item {{ Request::url() == url('/branches') ? 'active font-weight-normal' : '' }}">
                 <a class="nav-link" href="{{ route('branches') }}">Branches</a>
             </li>
-            <li class="nav-item {{ Request::url() == url('/pr-state') ? 'active font-weight-normal' : '' }}">
-                <a class="nav-link" href="{{ route('pr-state') }}">PR State</a>
+            <li class="nav-item {{ Request::url() == url('/pr-location') ? 'active font-weight-normal' : '' }}">
+                <a class="nav-link" href="{{ route('pr-location') }}">PR Location</a>
             </li>
         </ul>
 

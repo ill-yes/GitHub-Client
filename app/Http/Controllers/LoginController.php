@@ -179,7 +179,7 @@ class LoginController extends Controller
      */
     public function deadBranchesCall(Request $request)
     {
-        $repository = $request->get('repository');
+        $repository = (String) $request->get('repository');
         $pagination = (int) $request->get('pagination');
 
         if (!session()->exists('userLogin'))
@@ -194,7 +194,6 @@ class LoginController extends Controller
         }
 
         $callManager = SessionController::getSession();
-
         if (isset($callManager))
         {
             $branches = $callManager->getBranches($repository);
@@ -222,7 +221,7 @@ class LoginController extends Controller
         }
     }
 
-    public function prStateCall():View
+    public function prLocationCall():View
     {
         if (!session()->exists('userLogin'))
         {
@@ -232,13 +231,38 @@ class LoginController extends Controller
         $callManager = SessionController::getSession();
         if (isset($callManager))
         {
-            // do something
+            $repo = 'php-py';
+            $teamId = 2093095;
+            $pagin = 1;
 
-            return view('pages.pr-state');
+            $pullRequests = $callManager->getPullRequests($repo, $pagin);
+            $members = $callManager->getTeamMembers($teamId);
+
+            if (isset($pullRequests) && isset($members))
+            {
+                $filteredPulls = FilterCallData::filterPullrequestsWithMembers($pullRequests, $members);
+
+                foreach ($filteredPulls as $key => $value)
+                {
+                    $filteredPulls[$key]['location'] = $callManager->compareCommitWithBranch($repo, $value['merge_commit_sha']);
+                    if (!$filteredPulls[$key]['location']) unset($filteredPulls[$key]);
+                    //if (!$filteredPulls[$key]['location']) $filteredPulls[$key]['location'] = 'others';
+                }
+
+                return view('pages.pr-location', [
+                    'pullRequests' => $filteredPulls
+                ]);
+            }
+            else
+            {
+                return view('pages.location', [
+                    'error' => "Pull Requests or Member - Call failed!"
+                ]);
+            }
         }
         else
         {
-            return view('pages.pr-state', [
+            return view('pages.pr-location', [
                 'error' => "No session found!"
             ]);
         }

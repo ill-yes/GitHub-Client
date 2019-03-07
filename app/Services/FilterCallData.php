@@ -60,14 +60,24 @@ class FilterCallData
                 }
             }
         }
-        //$filteredBranches = array_intersect_key($pullRequests['branch_name'], $branches['name']);
 
-        /*$activeItems = array_uintersect($pullRequests, $pullRequests['branch_name'], function($pullRequests, $branches) {
-            return ($pullRequests['branch_name'] - $branches['name']);
-        });
-        dd($activeItems);*/
         return $filteredBranches;
-
     }
 
+    // TODO: methode implementieren, die pr filtert nach "merged_at" um so "closed"-prs ohne merge zu filtern
+
+    public static function filterPullrequestsWithMembers( $pullRequests, $members)
+    {
+        $filteredPulls = [];
+
+        foreach ($pullRequests AS $pull)
+        {
+            if (isset($members[$pull['user_login']]))
+            {
+                $filteredPulls[] = $pull;
+            }
+        }
+
+        return $filteredPulls;
+    }
 }
