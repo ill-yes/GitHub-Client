@@ -15,14 +15,16 @@ class CreatePullrequestsTable extends Migration
     {
         Schema::create('pullrequests', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('title');
-            $table->unsignedInteger('pr_link');
-            $table->timestamp('branch_name');
-            $table->integer('branch_commit_sha');
-            $table->integer('merged_at');
-            $table->integer('merge_commit_sha');
-            $table->integer('user_login');
-            $table->integer('user_url');
+            $table->string('repository');
+            $table->string('title');
+            $table->string('pr_link');
+            $table->string('branch_name');
+            $table->string('branch_commit_sha');
+            $table->timestamp('merged_at');
+            $table->string('merge_commit_sha');
+            $table->string('user_login');
+            $table->string('user_url');
+            $table->string('location');
             $table->timestamps();
         });
     }

@@ -20,20 +20,18 @@ class CallManager
     const EARLY = 'early';
     const BETA = 'beta7';
 
-    private $user;
     private $client;
+    public $username;
 
     /**
      * CallManager constructor.
      * @param $username
      * @param $password
      */
-    function __construct ($username, $password)
+    function __construct ($token)
     {
-        $token = base64_encode($username . ':' . $password);
-
-        $this->user = new User($username, $password, $token);
         $this->client = new GithubClient($token);
+        $this->username = $this->getUsername();
     }
 
     /**
@@ -41,7 +39,7 @@ class CallManager
      */
     public function getUsername ()
     {
-        $data = $this->client->requester('/users/' . $this->user->getUsername());
+        $data = $this->client->requester('/user');
         $jsonData = $this->getDecode($data);
 
         if ($data->getStatusCode() == 200)
@@ -58,7 +56,7 @@ class CallManager
      */
     public function getUserInfo ()
     {
-        $data = $this->client->requester('/users/' . $this->user->getUsername());
+        $data = $this->client->requester('/users/' . $this->username);
         $jsonData = $this->getDecode($data);
 
         if ($data->getStatusCode() == 200)
@@ -76,7 +74,7 @@ class CallManager
      */
     public function getUserOwnRepo ()
     {
-        $data = $this->client->requester('/users/' . $this->user->getUsername() . '/repos');
+        $data = $this->client->requester('/users/' . $this->username . '/repos');
         $jsonData = $this->getDecode($data);
 
         if (isset($jsonData))
@@ -125,7 +123,7 @@ class CallManager
         $page = 1;
         $results = [];
         do {
-            $data = $this->client->requester('/repos/plentymarkets/'. $repo .'/pulls?state=closed&sort=updated&direction=desc&per_page=50&page=' . $page);
+            $data = $this->client->requester('/repos/plentymarkets/'. $repo .'/pulls?state=closed&sort=updated&direction=desc&per_page=' . 50 . '&page=' . $page);
             // todo: per page parameter abaendern!
 
             $paginationString = $data->getHeaderLine('Link');
@@ -139,7 +137,7 @@ class CallManager
                 $pull['branch_name'] = $pullRequest->head->ref;
                 $pull['branch_commit_sha'] = $pullRequest->head->sha;
 
-                $pull['merged_at'] = Carbon::parse($pullRequest->merged_at)->format('d-m-Y H:i');
+                $pull['merged_at'] = Carbon::parse($pullRequest->merged_at)->format('Y-m-d H:i:s');
                 $pull['merge_commit_sha'] = $pullRequest->merge_commit_sha;
 
                 $pull['user_login'] = $pullRequest->user->login;

@@ -10,6 +10,8 @@ namespace App\Http\Controllers;
 
 
 use App\Client\CallManager;
+use App\Cron\PullrequestsCron;
+use App\DB\PullrequestsModel;
 use App\Services\FilterCallData;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -27,8 +29,10 @@ class LoginController extends Controller
      */
     public function initLogin(Request $request)
     {
-        $callManager = new CallManager($request->get('username'), $request->get('password'));
-        $username = $callManager->getUsername();
+        $token = base64_encode($request->get('username') . ':' . $request->get('password'));
+
+        $callManager = new CallManager($token);
+        $username = $callManager->username;
 
         if (!isset($username))
         {
@@ -228,42 +232,22 @@ class LoginController extends Controller
             return view('pages.home');
         }
 
-        $callManager = SessionController::getSession();
-        if (isset($callManager))
+        //$pr = new PullrequestsCron();
+        //$pr->addCron(env('TOKEN'), 'php-pl', 2093095, 3);
+        //$pr->iterativeStart();
+
+        // todo: daten aus db laden anstatt call
+
+        if (PullrequestsModel::count() > 0)
         {
-            $repo = 'php-py';
-            $teamId = 2093095;
-            $pagin = 1;
-
-            $pullRequests = $callManager->getPullRequests($repo, $pagin);
-            $members = $callManager->getTeamMembers($teamId);
-
-            if (isset($pullRequests) && isset($members))
-            {
-                $filteredPulls = FilterCallData::filterPullrequestsWithMembers($pullRequests, $members);
-
-                foreach ($filteredPulls as $key => $value)
-                {
-                    $filteredPulls[$key]['location'] = $callManager->compareCommitWithBranch($repo, $value['merge_commit_sha']);
-                    if (!$filteredPulls[$key]['location']) unset($filteredPulls[$key]);
-                    //if (!$filteredPulls[$key]['location']) $filteredPulls[$key]['location'] = 'others';
-                }
-
-                return view('pages.pr-location', [
-                    'pullRequests' => $filteredPulls
-                ]);
-            }
-            else
-            {
-                return view('pages.location', [
-                    'error' => "Pull Requests or Member - Call failed!"
-                ]);
-            }
+            return view('pages.pr-location', [
+                'pullRequests' => PullrequestsModel::all()
+            ]);
         }
         else
         {
             return view('pages.pr-location', [
-                'error' => "No session found!"
+                'error' => 'Database empty!'
             ]);
         }
     }

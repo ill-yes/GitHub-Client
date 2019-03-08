@@ -49,18 +49,18 @@
                                                 <tr>
                                                     <td><b>{{ $pull['title'] }}</b></td>
                                                     <td><a href="{{ $pull['pr_link'] }}" target="_blank">{{ $pull['merge_commit_sha'] }}</a></td>
-                                                    <td>{{ $pull['merged_at'] }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($pull['merged_at'])->format('d-m-Y, H:i') }}</td>
                                                     <td><a href="{{ $pull['user_url'] }}" target="_blank">{{ $pull['user_login'] }}</a></td>
 
-                                                    @if($pull['location'] == \App\Client\CallManager::BETA)
-                                                        <td class="bg-danger">{{ $pull['location'] }}</td>
-                                                    @elseif($pull['location'] == \App\Client\CallManager::EARLY)
-                                                        <td class="bg-warning">{{ $pull['location'] }}</td>
-                                                    @elseif($pull['location'] == \App\Client\CallManager::STABLE)
-                                                        <td class="bg-success">{{ $pull['location'] }}</td>
-                                                    @else
-                                                        <td class="bg-default">{{ $pull['location'] }}</td>
-                                                    @endif
+                                                        @if($pull['location'] == \App\Client\CallManager::BETA)
+                                                            <td class="bg-danger" style="text-align: center">{{ $pull['location'] }}</td>
+                                                        @elseif($pull['location'] == \App\Client\CallManager::EARLY)
+                                                            <td class="bg-warning" style="text-align: center">{{ $pull['location'] }}</td>
+                                                        @elseif($pull['location'] == \App\Client\CallManager::STABLE)
+                                                            <td class="bg-success" style="text-align: center">{{ $pull['location'] }}</td>
+                                                        @else
+                                                            <td class="bg-default">{{ $pull['location'] }}</td>
+                                                        @endif
 
                                                 </tr>
                                             @endforeach
