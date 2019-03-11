@@ -28,5 +28,5 @@ Route::middleware(['basicAuth'])->group(function () {
     Route::post('/branches', 'LoginController@deadBranchesCall')->name('getDeadBranches');
 
     Route::get('/pr-location', 'LoginController@prLocationCall')->name('pr-location');
-    
+
 });
