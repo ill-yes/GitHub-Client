@@ -23,20 +23,13 @@ class CallManager
     private $client;
     public $username;
 
-    /**
-     * CallManager constructor.
-     * @param $username
-     * @param $password
-     */
+
     function __construct ($token)
     {
         $this->client = new GithubClient($token);
         $this->username = $this->getUsername();
     }
 
-    /**
-     * @return string
-     */
     public function getUsername ()
     {
         $data = $this->client->requester('/user');
@@ -51,9 +44,6 @@ class CallManager
         }
     }
 
-    /**
-     * @return mixed|null
-     */
     public function getUserInfo ()
     {
         $data = $this->client->requester('/users/' . $this->username);
@@ -68,10 +58,6 @@ class CallManager
         }
     }
 
-    /**
-     * @return mixed|null
-     *
-     */
     public function getUserOwnRepo ()
     {
         $data = $this->client->requester('/users/' . $this->username . '/repos');
@@ -171,7 +157,6 @@ class CallManager
         /**
          * TODO: Pagination schlecht geloest. Bessere Loesung finden! Einzige Alternative: String parsen.. auch shit!
          * todo: pagination-doWhile als abstrakt auslagern
-         * Filter "branch_name" muss in FilterCallData::Class gezogen werden
          */
 
         $page = 1;

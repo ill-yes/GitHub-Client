@@ -59,7 +59,7 @@
                 <div class="row">
                     <div class="col-12">
                         <span class="tab-content ml-1" id="myTabContent">
-                            <table id="branches" class="table table-striped">
+                            <table id="branches" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
                                         <th scope="col">Title</th>

@@ -87,6 +87,11 @@
 
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="{{ asset('js/app.js') }}"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="http://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+
 @yield('js')
 
 </body>

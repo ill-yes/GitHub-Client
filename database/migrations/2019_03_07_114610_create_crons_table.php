@@ -15,9 +15,9 @@ class CreateCronsTable extends Migration
     {
         Schema::create('crons', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('repo');
+            $table->string('repository');
             $table->string('teamId');
-            $table->string('pages');
+            $table->string('pullrequests');
             $table->string('token');
             $table->timestamps();
         });

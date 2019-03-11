@@ -15,13 +15,11 @@
 
                     <div class="col-12">
                         <form class="form-inline float-right">
-                            Space for adding crons
-
+                            Button for manual updating?
                         </form>
                     </div>
                 </div>
             </div>
-
     </div>
 </div>
 
@@ -32,48 +30,53 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-12">
-                        <span class="tab-content ml-1" id="myTabContent">
-                            <table id="branches" class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Title</th>
-                                        <th scope="col">SHA/Link</th>
-                                        <th scope="col">Merged at</th>
-                                        <th scope="col">Author</th>
-                                        <th scope="col">Current location</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                        @if(isset($pullRequests))
-                                            @foreach ($pullRequests as $pull)
-                                                <tr>
-                                                    <td><b>{{ $pull['title'] }}</b></td>
-                                                    <td><a href="{{ $pull['pr_link'] }}" target="_blank">{{ $pull['merge_commit_sha'] }}</a></td>
-                                                    <td>{{ \Carbon\Carbon::parse($pull['merged_at'])->format('d-m-Y, H:i') }}</td>
-                                                    <td><a href="{{ $pull['user_url'] }}" target="_blank">{{ $pull['user_login'] }}</a></td>
+                        <table id="pullrequests" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Repository</th>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Merged at</th>
+                                    <th scope="col">Author</th>
+                                    <th scope="col">Current location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(isset($pullRequests))
+                                    @foreach ($pullRequests as $pull)
+                                        <tr>
+                                            <td><b>{{ $pull['repository'] }}</b></td>
+                                            <td><a href="{{ $pull['pr_link'] }}" target="_blank">{{ $pull['title'] }}</a></td>
 
-                                                        @if($pull['location'] == \App\Client\CallManager::BETA)
-                                                            <td class="bg-danger" style="text-align: center">{{ $pull['location'] }}</td>
-                                                        @elseif($pull['location'] == \App\Client\CallManager::EARLY)
-                                                            <td class="bg-warning" style="text-align: center">{{ $pull['location'] }}</td>
-                                                        @elseif($pull['location'] == \App\Client\CallManager::STABLE)
-                                                            <td class="bg-success" style="text-align: center">{{ $pull['location'] }}</td>
-                                                        @else
-                                                            <td class="bg-default">{{ $pull['location'] }}</td>
-                                                        @endif
+                                            <td>{{ \Carbon\Carbon::parse($pull['merged_at'])->format('Y-m-d, H:i | l') }}</td>
+                                            <td><a href="{{ $pull['user_url'] }}" target="_blank">{{ $pull['user_login'] }}</a></td>
 
-                                                </tr>
-                                            @endforeach
-                                        @endif
-                                    </tbody>
-                            </table>
-                        </span>
+                                                @if($pull['location'] == \App\Client\CallManager::BETA)
+                                                    <td class="bg-danger" style="text-align: center">{{ $pull['location'] }}</td>
+                                                @elseif($pull['location'] == \App\Client\CallManager::EARLY)
+                                                    <td class="bg-warning" style="text-align: center">{{ $pull['location'] }}</td>
+                                                @elseif($pull['location'] == \App\Client\CallManager::STABLE)
+                                                    <td class="bg-success" style="text-align: center">{{ $pull['location'] }}</td>
+                                                @else
+                                                    <td class="bg-default">{{ $pull['location'] }}</td>
+                                                @endif
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 @stop
 
+
+@section('js')
+    <script>
+        $(document).ready( function () {
+            $('#pullrequests').DataTable();
+        } );
+    </script>
+@endsection

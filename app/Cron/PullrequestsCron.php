@@ -17,12 +17,12 @@ use App\Services\FilterCallData;
 class PullrequestsCron
 {
 
-    public function addCron($token, $repository, $teamId, $pages)
+    public function addCron($token, $repository, $teamId, $pullrequests)
     {
         CronModel::create([
-            'repo' => $repository,
+            'repository' => $repository,
             'teamId' => $teamId,
-            'pages' => $pages,
+            'pullrequests' => $pullrequests,
             'token' => $token
         ]);
     }
@@ -43,8 +43,7 @@ class PullrequestsCron
     {
         $callMngr       = new CallManager(              $cron->token);
         $members        = $callMngr->getTeamMembers(    $cron->teamId);
-        $pullRequests   = $callMngr->getPullRequests(   $cron->repo, $cron->pages);
-
+        $pullRequests   = $callMngr->getPullRequests(   $cron->repository, $cron->pullrequests);
 
         if (isset($pullRequests) && isset($members))
         {
@@ -52,15 +51,19 @@ class PullrequestsCron
 
             foreach ($filteredPulls as $key => $value)
             {
-                $filteredPulls[$key]['location'] = $callMngr->compareCommitWithBranch($cron->repo, $value['merge_commit_sha']);
+                $filteredPulls[$key]['location'] = $callMngr->compareCommitWithBranch($cron->repository, $value['merge_commit_sha']);
 
-                // entfernt prs, dessen location leer ist (also ausserhalb von beta, early, stable
-                if (!$filteredPulls[$key]['location']) unset($filteredPulls[$key]);
+                // entfernt prs, deren location leer ist (also ausserhalb von beta, early, stable)
+                if (!$filteredPulls[$key]['location'])
+                {
+                    unset($filteredPulls[$key]);
+                    continue;
+                }
                 //if (!$filteredPulls[$key]['location']) $filteredPulls[$key]['location'] = 'others';
 
                 // speichert in db
                 $pullRequests = PullrequestsModel::create([
-                    'repository' => $cron->repo,
+                    'repository' => $cron->repository,
                     'title' => $filteredPulls[$key]['title'],
                     'pr_link' => $filteredPulls[$key]['pr_link'],
                     'branch_name' => $filteredPulls[$key]['branch_name'],

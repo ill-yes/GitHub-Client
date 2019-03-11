@@ -16,9 +16,9 @@ class CronModel extends Model
     protected $table = 'crons';
 
     protected $fillable = [
-        'repo',
+        'repository',
         'teamId',
-        'pages',
+        'pullrequests',
         'token'
     ];
 }

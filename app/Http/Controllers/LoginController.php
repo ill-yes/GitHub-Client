@@ -233,8 +233,9 @@ class LoginController extends Controller
         }
 
         $pr = new PullrequestsCron();
-        //$pr->addCron(env('TOKEN'), 'php-pl', 2093095, 3);
-        $pr->iterativeStart();
+        //$pr->addCron(env('TOKEN'), 'module-order', 2093095, 30);
+        //$pr->addCron(env('TOKEN'), 'php-pl', 2093095, 100);
+        //$pr->iterativeStart();
 
         // todo: daten aus db laden anstatt call
 
