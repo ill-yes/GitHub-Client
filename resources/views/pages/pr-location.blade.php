@@ -15,7 +15,7 @@
 
                     <div class="col-12">
                         <form class="form-inline float-right">
-                            Button for manual updating?
+                            <b>Last update: <u>{{ \Carbon\Carbon::parse($lastUpdate)->format('l - H:i, d.m.Y') }}</u></b>
                         </form>
                     </div>
                 </div>

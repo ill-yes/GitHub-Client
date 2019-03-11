@@ -240,12 +240,14 @@ class LoginController extends Controller
         if (PullrequestsModel::count() > 0)
         {
             return view('pages.pr-location', [
+                'lastUpdate' => PullrequestsModel::all()->first()->created_at,
                 'pullRequests' => PullrequestsModel::all()
             ]);
         }
         else
         {
             return view('pages.pr-location', [
+                'lastUpdate' => "Never",
                 'error' => 'Database empty!'
             ]);
         }
