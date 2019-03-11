@@ -13,9 +13,19 @@ use App\Client\CallManager;
 use App\DB\CronModel;
 use App\DB\PullrequestsModel;
 use App\Services\FilterCallData;
+use Illuminate\Console\Command;
 
-class PullrequestsCron
+class PullrequestsCron extends Command
 {
+
+    protected $signature = 'cron:pullrequests';
+
+    protected $description = 'Running the cron for fetching pull requests';
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     public function addCron($token, $repository, $teamId, $pullrequests)
     {
@@ -27,54 +37,68 @@ class PullrequestsCron
         ]);
     }
 
-    public function iterativeStart()
+    public function handle()
     {
         $crons = CronModel::all();
 
         PullrequestsModel::truncate();
 
+        $run = 0;
+        $timeStart = microtime(true);
         foreach ($crons as $cron)
         {
-            $this->run($cron);
+            if ($this->singleRun($cron)) $run++;
         }
+        $timeEnd = microtime(true);
+        $timeRun = $timeEnd - $timeStart;
+
+        $this->info($run . " / " . CronModel::count() . ": Completed after " . $timeRun . " seconds!");
     }
 
-    private function run ($cron)
+    public function singleRun ($cron)
     {
-        $callMngr       = new CallManager(              $cron->token);
-        $members        = $callMngr->getTeamMembers(    $cron->teamId);
-        $pullRequests   = $callMngr->getPullRequests(   $cron->repository, $cron->pullrequests);
-
-        if (isset($pullRequests) && isset($members))
+        try
         {
-            $filteredPulls = FilterCallData::filterPullrequestsWithMembers($pullRequests, $members);
+            $callMngr       = new CallManager(              $cron->token);
+            $members        = $callMngr->getTeamMembers(    $cron->teamId);
+            $pullRequests   = $callMngr->getPullRequests(   $cron->repository, $cron->pullrequests);
 
-            foreach ($filteredPulls as $key => $value)
+            if (isset($pullRequests) && isset($members))
             {
-                $filteredPulls[$key]['location'] = $callMngr->compareCommitWithBranch($cron->repository, $value['merge_commit_sha']);
+                $filteredPulls = FilterCallData::filterPullrequestsWithMembers($pullRequests, $members);
 
-                // entfernt prs, deren location leer ist (also ausserhalb von beta, early, stable)
-                if (!$filteredPulls[$key]['location'])
+                foreach ($filteredPulls as $key => $value)
                 {
-                    unset($filteredPulls[$key]);
-                    continue;
-                }
-                //if (!$filteredPulls[$key]['location']) $filteredPulls[$key]['location'] = 'others';
+                    $filteredPulls[$key]['location'] = $callMngr->compareCommitWithBranch($cron->repository, $value['merge_commit_sha']);
 
-                // speichert in db
-                $pullRequests = PullrequestsModel::create([
-                    'repository' => $cron->repository,
-                    'title' => $filteredPulls[$key]['title'],
-                    'pr_link' => $filteredPulls[$key]['pr_link'],
-                    'branch_name' => $filteredPulls[$key]['branch_name'],
-                    'branch_commit_sha' => $filteredPulls[$key]['branch_commit_sha'],
-                    'merged_at' => $filteredPulls[$key]['merged_at'],
-                    'merge_commit_sha' => $filteredPulls[$key]['merge_commit_sha'],
-                    'user_login' => $filteredPulls[$key]['user_login'],
-                    'user_url' => $filteredPulls[$key]['user_url'],
-                    'location' => $filteredPulls[$key]['location']
-                ]);
+                    // entfernt prs, deren location leer ist (also ausserhalb von beta, early, stable)
+                    if (!$filteredPulls[$key]['location'])
+                    {
+                        unset($filteredPulls[$key]);
+                        continue;
+                    }
+                    //if (!$filteredPulls[$key]['location']) $filteredPulls[$key]['location'] = 'others';
+
+                    // speichert in db
+                    $pullRequests = PullrequestsModel::create([
+                        'repository' => $cron->repository,
+                        'title' => $filteredPulls[$key]['title'],
+                        'pr_link' => $filteredPulls[$key]['pr_link'],
+                        'branch_name' => $filteredPulls[$key]['branch_name'],
+                        'branch_commit_sha' => $filteredPulls[$key]['branch_commit_sha'],
+                        'merged_at' => $filteredPulls[$key]['merged_at'],
+                        'merge_commit_sha' => $filteredPulls[$key]['merge_commit_sha'],
+                        'user_login' => $filteredPulls[$key]['user_login'],
+                        'user_url' => $filteredPulls[$key]['user_url'],
+                        'location' => $filteredPulls[$key]['location']
+                    ]);
+                }
+                return true;
             }
+        }
+        catch (\Exception $e)
+        {
+            return false;
         }
     }
 }

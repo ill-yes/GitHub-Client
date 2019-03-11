@@ -232,12 +232,10 @@ class LoginController extends Controller
             return view('pages.home');
         }
 
-        $pr = new PullrequestsCron();
+        //$pr = new PullrequestsCron();
         //$pr->addCron(env('TOKEN'), 'module-order', 2093095, 30);
         //$pr->addCron(env('TOKEN'), 'php-pl', 2093095, 100);
         //$pr->iterativeStart();
-
-        // todo: daten aus db laden anstatt call
 
         if (PullrequestsModel::count() > 0)
         {

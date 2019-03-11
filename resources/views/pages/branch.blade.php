@@ -58,19 +58,17 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-12">
-                        <span class="tab-content ml-1" id="myTabContent">
-                            <table id="branches" class="table table-striped table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Title</th>
-                                        <th scope="col">Branch name</th>
-                                        <th scope="col">Author</th>
-                                        <th scope="col">Merged at</th>
-                                        <th scope="col">Pull Request</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </span>
+                        <table id="branches" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Branch name</th>
+                                    <th scope="col">Merged at</th>
+                                    <th scope="col">Author</th>
+                                    <th scope="col">Pull Request</th>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -125,8 +123,8 @@
                                 "columns": [
                                     { "data": "title" },
                                     { "data": "branch_name" },
-                                    { "data": "user_login" },
                                     { "data": "merged_at" },
+                                    { "data": "user_login" },
                                     { "data": "pr_link" ,
                                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                                             $(nTd).html("<a href='"+oData.pr_link+"'>"+oData.pr_link+"</a>");
