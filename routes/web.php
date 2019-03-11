@@ -11,18 +11,22 @@
 |
 */
 
-Route::view('/', 'pages.home')->name('home');
-Route::view('/login', 'pages.user')->name('login');
+Route::middleware(['basicAuth'])->group(function () {
 
-Route::post('/login', 'LoginController@initLogin')->name('setLogin');
-Route::get('/logout', 'SessionController@deleteSession')->name('logout');
+    Route::view('/', 'pages.home')->name('home');
+    Route::view('/login', 'pages.user')->name('login');
+
+    Route::post('/login', 'LoginController@initLogin')->name('setLogin');
+    Route::get('/logout', 'SessionController@deleteSession')->name('logout');
 
 
-// API CALLS
-Route::get('/user', 'LoginController@userInfoCall')->name('user');
-Route::get('/repository', 'LoginController@ownRepoCall')->name('repository');
+    // API CALLS
+    Route::get('/user', 'LoginController@userInfoCall')->name('user');
+    Route::get('/repository', 'LoginController@ownRepoCall')->name('repository');
 
-Route::get('/branches', 'LoginController@branchView')->name('branches');
-Route::post('/branches', 'LoginController@deadBranchesCall')->name('getDeadBranches');
+    Route::get('/branches', 'LoginController@branchView')->name('branches');
+    Route::post('/branches', 'LoginController@deadBranchesCall')->name('getDeadBranches');
 
-Route::get('/pr-location', 'LoginController@prLocationCall')->name('pr-location');
+    Route::get('/pr-location', 'LoginController@prLocationCall')->name('pr-location');
+    
+});
