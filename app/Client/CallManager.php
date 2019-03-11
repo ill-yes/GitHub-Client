@@ -118,13 +118,17 @@ class CallManager
         }
     }
 
-    public function getPullRequests (String $repo, int $endPage)
+    public function getPullRequests (String $repo, int $amountOfPulls)
     {
+        $endPage = (int) ceil($amountOfPulls / 100);
+
         $page = 1;
         $results = [];
         do {
-            $data = $this->client->requester('/repos/plentymarkets/'. $repo .'/pulls?state=closed&sort=updated&direction=desc&per_page=' . 50 . '&page=' . $page);
-            // todo: per page parameter abaendern!
+            $data = $this->client->requester('/repos/plentymarkets/'. $repo .'/pulls?state=closed&sort=updated&direction=desc' .
+                '&per_page=' . 100 .
+                '&page=' . $page);
+
 
             $paginationString = $data->getHeaderLine('Link');
             $jsonData = $this->getDecode($data);
@@ -246,6 +250,7 @@ class CallManager
             return null;
         }
     }
+
 
     /**
      * @param $data

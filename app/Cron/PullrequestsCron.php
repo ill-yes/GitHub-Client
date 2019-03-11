@@ -45,6 +45,7 @@ class PullrequestsCron
         $members        = $callMngr->getTeamMembers(    $cron->teamId);
         $pullRequests   = $callMngr->getPullRequests(   $cron->repo, $cron->pages);
 
+
         if (isset($pullRequests) && isset($members))
         {
             $filteredPulls = FilterCallData::filterPullrequestsWithMembers($pullRequests, $members);

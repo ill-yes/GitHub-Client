@@ -15,7 +15,7 @@ class CreatePullrequestsTable extends Migration
     {
         Schema::create('pullrequests', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('repository');
+            $table->string('repository')->index('repoIndex');
             $table->string('title');
             $table->string('pr_link');
             $table->string('branch_name');

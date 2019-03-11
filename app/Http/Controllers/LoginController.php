@@ -184,13 +184,13 @@ class LoginController extends Controller
     public function deadBranchesCall(Request $request)
     {
         $repository = (String) $request->get('repository');
-        $pagination = (int) $request->get('pagination');
+        $amountOfPRs = (int) $request->get('pullrequests');
 
         if (!session()->exists('userLogin'))
         {
             return view('pages.home');
         }
-        if (!isset($repository) || !isset($pagination))
+        if (!isset($repository) || !isset($amountOfPRs))
         {
             return view('pages.branch', [
                 'error' => "Repository or pagination not set!"
@@ -201,7 +201,7 @@ class LoginController extends Controller
         if (isset($callManager))
         {
             $branches = $callManager->getBranches($repository);
-            $pullRequests = $callManager->getPullRequests($repository, $pagination);
+            $pullRequests = $callManager->getPullRequests($repository, $amountOfPRs);
 
             if (isset($pullRequests) && isset($branches))
             {
@@ -232,9 +232,9 @@ class LoginController extends Controller
             return view('pages.home');
         }
 
-        //$pr = new PullrequestsCron();
+        $pr = new PullrequestsCron();
         //$pr->addCron(env('TOKEN'), 'php-pl', 2093095, 3);
-        //$pr->iterativeStart();
+        $pr->iterativeStart();
 
         // todo: daten aus db laden anstatt call
 

@@ -32,8 +32,8 @@
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">0 = all</div>
                                     </div>
-                                    <input type="number" class="form-control" id="amount_of_pages" required
-                                           placeholder="Pages (1 = 100PR)">
+                                    <input type="number" class="form-control" id="amount_of_prs" required
+                                           placeholder="Amount of PRs">
                             </div>
 
                             <div class="form-group">
@@ -99,7 +99,7 @@
                         dataType: 'json',
                         data: {
                             repository: jQuery('#repository_name').val(),
-                            pagination: jQuery('#amount_of_pages').val()
+                            pullrequests: jQuery('#amount_of_prs').val()
                         },
                         beforeSend: function() {
                             toggleDisplay(document.getElementById("submitText"));
