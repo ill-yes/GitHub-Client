@@ -40,11 +40,22 @@ class LoginController extends Controller
                 'error' => "Login failed!"
             ]);
         }
+        elseif (isset($username))
+        {
+            $members = $callManager->getTeamMembers(env('TEAM_ID'));
 
-        SessionController::setLoginSession($callManager);
-        SessionController::setUsernameSession($username);
+            if(isset($members[$username]))
+            {
+                SessionController::setLoginSession($callManager);
+                SessionController::setUsernameSession($username);
 
-        return redirect(request()->session()->previousUrl());
+                return redirect(request()->session()->previousUrl());
+            }
+        }
+
+        return view ('pages.home', [
+            'error' => "You're not in the team!"
+        ]);
     }
 
 
@@ -233,8 +244,8 @@ class LoginController extends Controller
         }
 
         //$pr = new PullrequestsCron();
-        //$pr->addCron(env('TOKEN'), 'module-order', 2093095, 30);
-        //$pr->addCron(env('TOKEN'), 'php-pl', 2093095, 100);
+        //$pr->addCron(env('TOKEN'), 'module-order', env('TEAM_ID'), 30);
+        //$pr->addCron(env('TOKEN'), 'php-pl', env('TEAM_ID'), 100);
         //$pr->iterativeStart();
 
         if (PullrequestsModel::count() > 0)
