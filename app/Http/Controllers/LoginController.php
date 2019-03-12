@@ -29,7 +29,17 @@ class LoginController extends Controller
      */
     public function initLogin(Request $request)
     {
-        $token = base64_encode($request->get('username') . ':' . $request->get('password'));
+        $username = $request->get('username');
+        $password = $request->get('password');
+
+        if (strlen($username) <= 0)
+        {
+            $token = base64_encode($password);
+        }
+        else
+        {
+            $token = base64_encode($username . ':' . $password);
+        }
 
         $callManager = new CallManager($token);
         $username = $callManager->username;

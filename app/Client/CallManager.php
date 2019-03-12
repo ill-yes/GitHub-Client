@@ -19,6 +19,7 @@ class CallManager
     const STABLE = 'stable7';
     const EARLY = 'early';
     const BETA = 'beta7';
+    const ORGANISATION = 'plentymarkets';
 
     private $client;
     public $username;
@@ -77,10 +78,9 @@ class CallManager
     {
         $page = 1;
         $results = [];
-        $organisation = 'plentymarkets';
 
         do {
-            $data = $this->client->requester('/orgs/' . $organisation . '/repos?page=' . $page);
+            $data = $this->client->requester('/orgs/' . self::ORGANISATION . '/repos?page=' . $page);
             $paginationString = $data->getHeaderLine('Link');
             $jsonData = $this->getDecode($data);
 
@@ -111,7 +111,7 @@ class CallManager
         $page = 1;
         $results = [];
         do {
-            $data = $this->client->requester('/repos/plentymarkets/'. $repo .'/pulls?state=closed&sort=updated&direction=desc' .
+            $data = $this->client->requester('/repos/' . self::ORGANISATION . '/'. $repo .'/pulls?state=closed&sort=updated&direction=desc' .
                 '&per_page=' . 100 .
                 '&page=' . $page);
 
@@ -162,7 +162,7 @@ class CallManager
         $page = 1;
         $results = [];
         do {
-            $data = $this->client->requester('/repos/plentymarkets/'. $repo .'/branches?per_page=100&page=' . $page);
+            $data = $this->client->requester('/repos/' . self::ORGANISATION . '/'. $repo .'/branches?per_page=100&page=' . $page);
 
             $paginationString = $data->getHeaderLine('Link');
             $jsonData = $this->getDecode($data);
@@ -190,17 +190,17 @@ class CallManager
 
     public function compareCommitWithBranch($repo, $mergedCommitSha)
     {
-        $data = $this->client->requester('/repos/plentymarkets/' . $repo . '/compare/' . self::STABLE . '...' . $mergedCommitSha);
+        $data = $this->client->requester('/repos/' . self::ORGANISATION . '/' . $repo . '/compare/' . self::STABLE . '...' . $mergedCommitSha);
         $jsonData = $this->getDecode($data);
 
         if ($jsonData->status == 'behind' || $jsonData->status == 'identical') return self::STABLE;
 
-        $data = $this->client->requester('/repos/plentymarkets/' . $repo . '/compare/' . self::EARLY . '...' . $mergedCommitSha);
+        $data = $this->client->requester('/repos/' . self::ORGANISATION . '/' . $repo . '/compare/' . self::EARLY . '...' . $mergedCommitSha);
         $jsonData = $this->getDecode($data);
 
         if ($jsonData->status == 'behind' || $jsonData->status == 'identical') return self::EARLY;
 
-        $data = $this->client->requester('/repos/plentymarkets/' . $repo . '/compare/' . self::BETA . '...' . $mergedCommitSha);
+        $data = $this->client->requester('/repos/' . self::ORGANISATION . '/' . $repo . '/compare/' . self::BETA . '...' . $mergedCommitSha);
         $jsonData = $this->getDecode($data);
 
         if ($jsonData->status == 'behind' || $jsonData->status == 'identical') return self::BETA;
