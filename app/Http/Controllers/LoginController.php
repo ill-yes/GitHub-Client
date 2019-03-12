@@ -243,10 +243,10 @@ class LoginController extends Controller
             return view('pages.home');
         }
 
-        //$pr = new PullrequestsCron();
-        //$pr->addCron(env('TOKEN'), 'module-order', env('TEAM_ID'), 30);
-        //$pr->addCron(env('TOKEN'), 'php-pl', env('TEAM_ID'), 100);
-        //$pr->iterativeStart();
+//        $pr = new PullrequestsCron();
+//        $pr->addCron(env('TOKEN'), 'module-order', env('TEAM_ID'), 30);
+//        $pr->addCron(env('TOKEN'), 'php-pl', env('TEAM_ID'), 100);
+//        $pr->handle();
 
         if (PullrequestsModel::count() > 0)
         {
