@@ -15,7 +15,7 @@
 
                     <div class="col-12">
                         <form class="form-inline float-right">
-                            <b>Last update: <u>{{ \Carbon\Carbon::parse($lastUpdate)->format('l - H:i, d.m.Y') }}</u></b>
+                            <b>Last update: <u>{{ $lastUpdate }}</u></b>
                         </form>
                     </div>
                 </div>

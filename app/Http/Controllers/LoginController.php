@@ -251,7 +251,7 @@ class LoginController extends Controller
         if (PullrequestsModel::count() > 0)
         {
             return view('pages.pr-location', [
-                'lastUpdate' => PullrequestsModel::all()->first()->created_at,
+                'lastUpdate' => \Carbon\Carbon::parse(PullrequestsModel::all()->first()->created_at)->format('l - H:i, d.m.Y'),
                 'pullRequests' => PullrequestsModel::all()
             ]);
         }
