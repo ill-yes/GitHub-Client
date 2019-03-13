@@ -6,7 +6,7 @@
  * Time: 10:16
  */
 
-namespace App\Cron;
+namespace App\Console\Commands;
 
 
 use App\Client\CallManager;
@@ -45,8 +45,7 @@ class PullrequestsCron extends Command
 
         $run = 0;
         $timeStart = microtime(true);
-        foreach ($crons as $cron)
-        {
+        foreach ($crons as $cron) {
             if ($this->singleRun($cron)) $run++;
         }
         $timeEnd = microtime(true);
@@ -55,25 +54,21 @@ class PullrequestsCron extends Command
         $this->info($run . " / " . CronModel::count() . ": Completed after " . $timeRun . " seconds!");
     }
 
-    public function singleRun ($cron)
+    public function singleRun($cron)
     {
-        try
-        {
-            $callMngr       = new CallManager(              $cron->token);
-            $members        = $callMngr->getTeamMembers(    $cron->teamId);
-            $pullRequests   = $callMngr->getPullRequests(   $cron->repository, $cron->pullrequests);
+        try {
+            $callMngr = new CallManager($cron->token);
+            $members = $callMngr->getTeamMembers($cron->teamId);
+            $pullRequests = $callMngr->getPullRequests($cron->repository, $cron->pullrequests);
 
-            if (isset($pullRequests) && isset($members))
-            {
+            if (isset($pullRequests) && isset($members)) {
                 $filteredPulls = FilterCallData::filterPullrequestsWithMembers($pullRequests, $members);
 
-                foreach ($filteredPulls as $key => $value)
-                {
+                foreach ($filteredPulls as $key => $value) {
                     $filteredPulls[$key]['location'] = $callMngr->compareCommitWithBranch($cron->repository, $value['merge_commit_sha']);
 
                     // entfernt prs, deren location leer ist (also ausserhalb von beta, early, stable)
-                    if (!$filteredPulls[$key]['location'])
-                    {
+                    if (!$filteredPulls[$key]['location']) {
                         unset($filteredPulls[$key]);
                         continue;
                     }
@@ -95,9 +90,7 @@ class PullrequestsCron extends Command
                 }
                 return true;
             }
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             return false;
         }
     }

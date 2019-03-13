@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Cron\PullrequestsCron;
+use App\Console\Commands\PullrequestsCron;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
