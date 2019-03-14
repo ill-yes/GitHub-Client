@@ -22,6 +22,10 @@
             height: 100vh;
             margin: 0;
         }
+        .no-gutter {
+            padding-right: 5px;
+            padding-left: 5px;
+        }
     </style>
 </head>
 <body>
@@ -55,12 +59,24 @@
             <form class="form-inline" method="POST" action="{{ route('login') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Username" name="username" min="1" max="30">
+                <div class="form-group no-gutter">
+                    <input type="text" class="form-control" placeholder="Username" id="usernameField" name="username" min="1" max="30">
+                    <span id="tokenInfoText" style="display: none;">
+                        <a href="https://github.com/settings/tokens" data-toggle="tooltip" data-placement="bottom" title="Link to GitHub-Token page">Token</a>
+                    </span>
                 </div>
-                <div class="form-group">
-                    <input type="password" class="form-control" placeholder="Password" name="password" min="1" max="255">
+
+                <div class="form-group no-gutter">
+                    <input type="password" class="form-control" placeholder="Password" id="passwordField" name="password" min="1" max="255">
                 </div>
+
+                <div class="form-check no-gutter">
+                    <input type="checkbox" class="form-check-input" id="tokenCheckbox" name="tokenCheck" onclick="onClickEvent();">
+                    <label class="form-check-label" for="tokenCheckbox">
+                        <a class="fas fa-key"></a>
+                    </label>
+                </div>
+
                 <button type="submit" class="btn btn-default">Submit</button>
             </form>
         @endif
@@ -89,10 +105,39 @@
 <script src="{{ asset('js/app.js') }}"></script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="http://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
 
-@yield('js')
+
+@section('js')
+    <script>
+        function onClickEvent()
+        {
+            var checkbox = document.getElementById("tokenCheckbox");
+            var usernameField = document.getElementById("usernameField");
+            var tokenInfoText = document.getElementById("tokenInfoText");
+            var passwordField = document.getElementById("passwordField");
+
+            if (checkbox.checked === true)
+            {
+                usernameField.style.display= 'none';
+                usernameField.value = '';
+                tokenInfoText.style.display= 'inline';
+                passwordField.placeholder = 'Key';
+                passwordField.value = '';
+            }
+            else if (checkbox.checked === false)
+            {
+                usernameField.style.display= 'inline';
+                tokenInfoText.style.display= 'none';
+                passwordField.placeholder = 'Password';
+            }
+        }
+    </script>
+@endsection
+
+    @yield('js')
 
 </body>
 </html>
