@@ -31,8 +31,9 @@ class LoginController extends Controller
     {
         $username = $request->get('username');
         $password = $request->get('password');
+        $tokenCheck = (boolean) $request->get('tokenCheck');
 
-        if (strlen($username) <= 0)
+        if ($tokenCheck)
         {
             $token = base64_encode($password);
         }
@@ -261,7 +262,7 @@ class LoginController extends Controller
         if (PullrequestsModel::count() > 0)
         {
             return view('pages.pr-location', [
-                'lastUpdate' => \Carbon\Carbon::parse(PullrequestsModel::all()->first()->created_at)->format('l - H:i, d.m.Y'),
+                'lastUpdate' => \Carbon\Carbon::parse(PullrequestsModel::first()->created_at)->format('l - H:i, d.m.Y'),
                 'pullRequests' => PullrequestsModel::all()
             ]);
         }
