@@ -10,11 +10,13 @@ namespace App\Http\Controllers;
 
 
 use App\Client\CallManager;
-use App\Cron\PullrequestsCron;
+use App\Console\Commands\PullrequestsCron;
 use App\DB\PullrequestsModel;
 use App\Services\FilterCallData;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Tests\Unit\FilteredPullrequestsTest;
 
 /**
  * Class LoginController
@@ -206,16 +208,16 @@ class LoginController extends Controller
     public function deadBranchesCall(Request $request)
     {
         $repository = (String) $request->get('repository');
-        $amountOfPRs = (int) $request->get('pullrequests');
+        $amountOfDays = (int) $request->get('days');
 
         if (!session()->exists('userLogin'))
         {
             return view('pages.home');
         }
-        if (!isset($repository) || !isset($amountOfPRs))
+        if (!isset($repository) || !isset($amountOfDays))
         {
             return view('pages.branch', [
-                'error' => "Repository or pagination not set!"
+                'error' => "Repository or days not set!"
             ]);
         }
 
@@ -223,7 +225,7 @@ class LoginController extends Controller
         if (isset($callManager))
         {
             $branches = $callManager->getBranches($repository);
-            $pullRequests = $callManager->getPullRequests($repository, $amountOfPRs);
+            $pullRequests = $callManager->getPullRequests($repository, $amountOfDays);
 
             if (isset($pullRequests) && isset($branches))
             {
@@ -254,15 +256,21 @@ class LoginController extends Controller
             return view('pages.home');
         }
 
-//        $pr = new PullrequestsCron();
-//        $pr->addCron(env('TOKEN'), 'module-order', env('TEAM_ID'), 30);
-//        $pr->addCron(env('TOKEN'), 'php-pl', env('TEAM_ID'), 100);
-//        $pr->handle();
+        // For debugging
+        /*$pr = new PullrequestsCron();
+        $baseBranches = [
+            'plentymarkets:early' => true,
+            'plentymarkets:beta7' => true,
+            'plentymarkets:stable7' => true
+        ];
+        $pr->addCron(env('TOKEN'), 'module-order', env('TEAM_ID'), 5, $baseBranches);
+        $pr->addCron(env('TOKEN'), 'php-pl', env('TEAM_ID'), 5, $baseBranches);
+        $pr->handle();*/
 
         if (PullrequestsModel::count() > 0)
         {
             return view('pages.pr-location', [
-                'lastUpdate' => \Carbon\Carbon::parse(PullrequestsModel::first()->created_at)->format('l - H:i, d.m.Y'),
+                'lastUpdate' => Carbon::parse(PullrequestsModel::first()->created_at)->format('l - H:i, d.m.Y'),
                 'pullRequests' => PullrequestsModel::all()
             ]);
         }

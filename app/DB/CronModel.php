@@ -18,7 +18,8 @@ class CronModel extends Model
     protected $fillable = [
         'repository',
         'teamId',
-        'pullrequests',
+        'days',
+        'base_branch',
         'token'
     ];
 }

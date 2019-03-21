@@ -66,7 +66,7 @@ class FilterCallData
 
     // TODO: methode implementieren, die pr filtert nach "merged_at" um so "closed"-prs ohne merge zu filtern
 
-    public static function filterPullrequestsWithMembers( $pullRequests, $members)
+    public static function filterPullrequestsByMembers($pullRequests, $members)
     {
         $filteredPulls = [];
 
@@ -80,4 +80,20 @@ class FilterCallData
 
         return $filteredPulls;
     }
+
+    public static function filterPullrequestsByBaseBranch($pullRequests, $baseBranches)
+    {
+        $filteredPulls = [];
+
+        foreach ($pullRequests AS $pull)
+        {
+            if (isset($baseBranches[$pull['base_label']]))
+            {
+                $filteredPulls[] = $pull;
+            }
+        }
+
+        return $filteredPulls;
+    }
+
 }

@@ -32,8 +32,8 @@
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">0 = all</div>
                                     </div>
-                                    <input type="number" class="form-control" id="amount_of_prs" required
-                                           placeholder="Amount of PRs">
+                                    <input type="number" class="form-control" id="amount_of_days" required
+                                           placeholder="Amount of Days">
                             </div>
 
                             <div class="form-group">
@@ -97,7 +97,7 @@
                         dataType: 'json',
                         data: {
                             repository: jQuery('#repository_name').val(),
-                            pullrequests: jQuery('#amount_of_prs').val()
+                            days: jQuery('#amount_of_days').val()
                         },
                         beforeSend: function() {
                             toggleDisplay(document.getElementById("submitText"));

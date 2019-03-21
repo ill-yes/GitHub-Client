@@ -104,10 +104,8 @@ class CallManager
         }
     }
 
-    public function getPullRequests (String $repo, int $amountOfPulls)
+    public function getPullRequests (String $repo, int $amountOfDays)
     {
-        $endPage = (int) ceil($amountOfPulls / 100);
-
         $page = 1;
         $results = [];
         do {
@@ -115,18 +113,23 @@ class CallManager
                 '&per_page=' . 100 .
                 '&page=' . $page);
 
-
             $paginationString = $data->getHeaderLine('Link');
             $jsonData = $this->getDecode($data);
+            $inDate = false;
 
             foreach ($jsonData AS $pullRequest)
             {
+                $inDate = $this->dateCalc($pullRequest->merged_at, $amountOfDays);
+                if (!$inDate) break;
+
                 $pull['title'] = $pullRequest->title;
                 $pull['pr_link'] = $pullRequest->html_url;
 
                 $pull['branch_name'] = $pullRequest->head->ref;
                 $pull['branch_commit_sha'] = $pullRequest->head->sha;
+                $pull['base_label'] = $pullRequest->base->label;
 
+                $pull['updated_at'] = Carbon::parse($pullRequest->updated_at)->format('Y-m-d H:i:s');
                 $pull['merged_at'] = Carbon::parse($pullRequest->merged_at)->format('Y-m-d H:i:s');
                 $pull['merge_commit_sha'] = $pullRequest->merge_commit_sha;
 
@@ -135,12 +138,10 @@ class CallManager
 
                 $results[] = $pull;
             }
-
             $page++;
-        } while (($endPage == 0) ? strpos($paginationString, 'rel="next"') : $page < $endPage);
-
+        } while (strpos($paginationString, 'rel="next"') && $inDate);
+        //} while (($endPage == 0) ? strpos($paginationString, 'rel="next"') : $page < $endPage);
         //} while ($page < 1);
-        //} while (strpos($paginationString, 'rel="next"'));
 
         if (isset($results))
         {
@@ -236,6 +237,13 @@ class CallManager
         }
     }
 
+    private function dateCalc($mergedDate, int $days)
+    {
+        $date = Carbon::parse($mergedDate)->format('Y-m-d');
+        $endDate = Carbon::today()->subDays($days)->format('Y-m-d');
+
+        return $endDate <= $date;
+    }
 
     /**
      * @param $data
@@ -245,5 +253,4 @@ class CallManager
     {
         return json_decode($data->getBody());
     }
-
 }
