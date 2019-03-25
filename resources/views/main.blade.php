@@ -67,7 +67,7 @@
                 </div>
 
                 <div class="form-group no-gutter">
-                    <input type="password" class="form-control" placeholder="Password" id="passwordField" name="password" min="1" max="255">
+                    <input type="password" class="form-control" placeholder="Password" id="passwordField" name="password" required min="1" max="255">
                 </div>
 
                 <div class="form-check no-gutter">

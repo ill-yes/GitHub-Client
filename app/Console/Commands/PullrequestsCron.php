@@ -27,18 +27,20 @@ class PullrequestsCron extends Command
         parent::__construct();
     }
 
-    public function addCron($token, $repository, $teamId, $pullrequests)
+    public function addCron($token, $repository, $teamId, $days, $baseBranch)
     {
         CronModel::create([
             'repository' => $repository,
             'teamId' => $teamId,
-            'pullrequests' => $pullrequests,
+            'days' => $days,
+            'base_branch' => json_encode($baseBranch),
             'token' => $token
         ]);
     }
 
     public function handle()
     {
+        $this->info("Starting cron!");
         $crons = CronModel::all();
 
         PullrequestsModel::truncate();
@@ -59,33 +61,37 @@ class PullrequestsCron extends Command
         try {
             $callMngr = new CallManager($cron->token);
             $members = $callMngr->getTeamMembers($cron->teamId);
-            $pullRequests = $callMngr->getPullRequests($cron->repository, $cron->pullrequests);
+            $pullRequests = $callMngr->getPullRequests($cron->repository, $cron->days);
 
             if (isset($pullRequests) && isset($members)) {
-                $filteredPulls = FilterCallData::filterPullrequestsWithMembers($pullRequests, $members);
 
-                foreach ($filteredPulls as $key => $value) {
-                    $filteredPulls[$key]['location'] = $callMngr->compareCommitWithBranch($cron->repository, $value['merge_commit_sha']);
+                $baseBranches = json_decode($cron->base_branch, true);
+
+                $filteredPullsByBranch = FilterCallData::filterPullrequestsByBaseBranch($pullRequests, $baseBranches);
+                $filteredPullsByMember = FilterCallData::filterPullrequestsByMembers($filteredPullsByBranch, $members);
+
+                foreach ($filteredPullsByMember as $key => $value) {
+                    $filteredPullsByMember[$key]['location'] = $callMngr->compareCommitWithBranch($cron->repository, $value['merge_commit_sha']);
 
                     // entfernt prs, deren location leer ist (also ausserhalb von beta, early, stable)
-                    if (!$filteredPulls[$key]['location']) {
-                        unset($filteredPulls[$key]);
+                    if (!$filteredPullsByMember[$key]['location']) {
+                        unset($filteredPullsByMember[$key]);
                         continue;
                     }
-                    //if (!$filteredPulls[$key]['location']) $filteredPulls[$key]['location'] = 'others';
+                    //if (!$filteredPullsByMember[$key]['location']) $filteredPullsByMember[$key]['location'] = 'others';
 
                     // speichert in db
-                    $pullRequests = PullrequestsModel::create([
+                    PullrequestsModel::create([
                         'repository' => $cron->repository,
-                        'title' => $filteredPulls[$key]['title'],
-                        'pr_link' => $filteredPulls[$key]['pr_link'],
-                        'branch_name' => $filteredPulls[$key]['branch_name'],
-                        'branch_commit_sha' => $filteredPulls[$key]['branch_commit_sha'],
-                        'merged_at' => $filteredPulls[$key]['merged_at'],
-                        'merge_commit_sha' => $filteredPulls[$key]['merge_commit_sha'],
-                        'user_login' => $filteredPulls[$key]['user_login'],
-                        'user_url' => $filteredPulls[$key]['user_url'],
-                        'location' => $filteredPulls[$key]['location']
+                        'title' => $filteredPullsByMember[$key]['title'],
+                        'pr_link' => $filteredPullsByMember[$key]['pr_link'],
+                        'branch_name' => $filteredPullsByMember[$key]['branch_name'],
+                        'branch_commit_sha' => $filteredPullsByMember[$key]['branch_commit_sha'],
+                        'merged_at' => $filteredPullsByMember[$key]['merged_at'],
+                        'merge_commit_sha' => $filteredPullsByMember[$key]['merge_commit_sha'],
+                        'user_login' => $filteredPullsByMember[$key]['user_login'],
+                        'user_url' => $filteredPullsByMember[$key]['user_url'],
+                        'location' => $filteredPullsByMember[$key]['location']
                     ]);
                 }
                 return true;
