@@ -23,6 +23,7 @@ class FilteredPullrequestsTest extends TestCase
         $cron['token'] = env('TOKEN');
 
         $prBaseBranches['repository'] = [
+            'plentymarkets:feature' => true,
             'plentymarkets:early' => true,
             'plentymarkets:beta7' => true,
             'plentymarkets:stable7' => true

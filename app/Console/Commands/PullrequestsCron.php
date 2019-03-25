@@ -40,6 +40,7 @@ class PullrequestsCron extends Command
 
     public function handle()
     {
+        $this->info("Starting cron!");
         $crons = CronModel::all();
 
         PullrequestsModel::truncate();
