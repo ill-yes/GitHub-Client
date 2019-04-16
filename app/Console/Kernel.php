@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
         $schedule->command('cron:pullrequests')
-            ->dailyAt('12:00');
+            ->twiceDaily(12, 20);
     }
 
     /**
