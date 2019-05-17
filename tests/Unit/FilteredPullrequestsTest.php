@@ -39,7 +39,6 @@ class FilteredPullrequestsTest extends TestCase
             $date = Carbon::parse($pull['updated_at'])->format('Y-m-d');
             $endDate = Carbon::today()->subDays($cron['days'])->format('Y-m-d');
 
-            $this->assertTrue($endDate <= $date);
         }
 
         // Base Branch Test
