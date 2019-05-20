@@ -50,7 +50,7 @@ class LoginController extends Controller
         if (!isset($username))
         {
             return view ('pages.home', [
-                'error' => "Login failed!"
+                'error' => "Login failed or 2FA is active for this account (use token-method) !"
             ]);
         }
         elseif (isset($username))
