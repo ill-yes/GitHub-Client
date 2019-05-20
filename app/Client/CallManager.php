@@ -25,9 +25,9 @@ class CallManager
     public $username;
 
 
-    function __construct ($token)
+    function __construct ($userPW, bool $token)
     {
-        $this->client = new GithubClient($token);
+        $this->client = new GithubClient($userPW, $token);
         $this->username = $this->getUsername();
     }
 

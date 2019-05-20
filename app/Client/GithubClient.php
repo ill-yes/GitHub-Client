@@ -20,14 +20,25 @@ class GithubClient
     private static $URL = 'https://api.github.com';
 
     private $auth;
+    private $method;
 
     /**
      * GithubClient constructor.
      * @param $auth
+     * @param bool $token
      */
-    function __construct ($auth)
+    function __construct ($auth, bool $token)
     {
         $this->auth = $auth;
+
+        if ($token)
+        {
+            $this->method = "token";
+        }
+        else
+        {
+            $this->method = "Basic";
+        }
     }
 
     /**
@@ -57,7 +68,7 @@ class GithubClient
             $response = $client->get(self::$URL . $endpoint,
                 [
                     'headers' => [
-                        'Authorization' => 'Basic ' . $this->auth
+                        'Authorization' => $this->method . ' ' . $this->auth
                     ],
                 ]);
         }

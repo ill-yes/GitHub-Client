@@ -59,7 +59,7 @@ class PullrequestsCron extends Command
     public function singleRun($cron)
     {
         try {
-            $callMngr = new CallManager($cron->token);
+            $callMngr = new CallManager($cron->token, true);
             $members = $callMngr->getTeamMembers($cron->teamId);
             $pullRequests = $callMngr->getPullRequests($cron->repository, $cron->days);
 

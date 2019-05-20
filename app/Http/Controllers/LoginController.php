@@ -37,14 +37,15 @@ class LoginController extends Controller
 
         if ($tokenCheck)
         {
-            $token = base64_encode($password);
+            $token = $password;
+            $callManager = new CallManager($token, true);
         }
         else
         {
-            $token = base64_encode($username . ':' . $password);
+            $userPw = base64_encode($username . ':' . $password);
+            $callManager = new CallManager($userPw, false);
         }
 
-        $callManager = new CallManager($token);
         $username = $callManager->username;
 
         if (!isset($username))

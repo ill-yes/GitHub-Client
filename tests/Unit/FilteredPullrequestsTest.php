@@ -29,7 +29,7 @@ class FilteredPullrequestsTest extends TestCase
             'plentymarkets:stable7' => true
         ];
 
-        $callMngr = new CallManager($cron['token']);
+        $callMngr = new CallManager($cron['token'], true);
 
         // Date Test
         $pulls = $callMngr->getPullRequests($cron['repository'], $cron['days']);
