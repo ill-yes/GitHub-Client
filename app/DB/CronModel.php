@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: ilyestascou
- * Date: 2019-03-07
- * Time: 12:49
- */
 
 namespace App\DB;
 
