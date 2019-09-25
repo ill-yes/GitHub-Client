@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: ilyestascou
- * Date: 09.11.18
- * Time: 15:18
- */
 
 namespace App\Client;
 
