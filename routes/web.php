@@ -11,18 +11,27 @@
 |
 */
 
-Route::view('/', 'pages.home')->name('home');
-Route::view('/login', 'pages.user')->name('login');
+use Illuminate\Support\Facades\Route;
 
-Route::post('/login', 'LoginController@initLogin')->name('setLogin');
-Route::get('/logout', 'SessionController@deleteSession')->name('logout');
+
+Route::get('login/github', 'AuthController@redirectToProvider')->name("login");
+Route::get('login/github/callback', 'AuthController@handleProviderCallback')->name("auth.callback");
+
+Route::get('/', 'LoginController@initLogin');
+
+
+//Route::view('/', 'pages.home')->name('home');
+//Route::view('/login', 'pages.user')->name('login');
+
+//Route::post('/login', 'AuthController@initLogin')->name('setLogin');
+//Route::get('/logout', 'SessionController@deleteSession')->name('logout');
 
 
 // API CALLS
-Route::get('/user', 'LoginController@userInfoCall')->name('user');
-Route::get('/repository', 'LoginController@ownRepoCall')->name('repository');
+Route::get('/user', 'AuthController@userInfoCall')->name('user');
+Route::get('/repository', 'AuthController@ownRepoCall')->name('repository');
 
-Route::get('/branches', 'LoginController@branchView')->name('branches');
-Route::post('/branches', 'LoginController@deadBranchesCall')->name('getDeadBranches');
+Route::get('/branches', 'AuthController@branchView')->name('branches');
+Route::post('/branches', 'AuthController@deadBranchesCall')->name('getDeadBranches');
 
-Route::get('/pr-location', 'LoginController@prLocationCall')->name('pr-location');
+Route::get('/pr-location', 'AuthController@prLocationCall')->name('pr-location');

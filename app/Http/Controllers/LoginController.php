@@ -16,10 +16,11 @@ use App\Services\FilterCallData;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Laravel\Socialite\Facades\Socialite;
 use Tests\Unit\FilteredPullrequestsTest;
 
 /**
- * Class LoginController
+ * Class AuthController
  * @package App\Http\Controllers
  */
 class LoginController extends Controller
@@ -31,22 +32,11 @@ class LoginController extends Controller
      */
     public function initLogin(Request $request)
     {
-        $username = $request->get('username');
-        $password = $request->get('password');
-        $tokenCheck = (boolean) $request->get('tokenCheck');
 
-        if ($tokenCheck)
-        {
-            $token = $password;
-            $callManager = new CallManager($token, true);
-        }
-        else
-        {
-            $userPw = base64_encode($username . ':' . $password);
-            $callManager = new CallManager($userPw, false);
-        }
+        $callManager = new CallManager(auth()->user()->token, true);
 
-        $username = $callManager->username;
+
+        $username = auth()->user()->getAuthIdentifierName();
 
         if (!isset($username))
         {
