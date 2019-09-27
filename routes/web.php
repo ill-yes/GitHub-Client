@@ -15,9 +15,11 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('login/github', 'AuthController@redirectToProvider')->name("login");
-Route::get('login/github/callback', 'AuthController@handleProviderCallback')->name("auth.callback");
+//Route::get('login/github/callback', 'AuthController@handleProviderCallback')->name("auth.callback");
 
-Route::get('/', 'LoginController@initLogin');
+Route::get('login/github/callback', 'SocialiteController@callback');
+Route::get('/', 'SocialiteController@redirect');
+//Route::get('/', 'LoginController@initLogin');
 
 
 //Route::view('/', 'pages.home')->name('home');
