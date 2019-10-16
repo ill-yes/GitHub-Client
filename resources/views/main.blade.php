@@ -41,57 +41,41 @@
             <li class="nav-item {{ Request::url() == url('/') ? 'active font-weight-normal' : '' }}">
                 <a class="nav-link" href="/">Home</a>
             </li>
-            <li class="nav-item {{ Request::url() == url('/user') ? 'active font-weight-normal' : '' }}">
-                <a class="nav-link" href="{{ route('user') }}">User</a>
-            </li>
-            <li class="nav-item {{ Request::url() == url('/repository') ? 'active font-weight-normal' : '' }}">
-                <a class="nav-link" href="{{ route('repository') }}">Repository</a>
-            </li>
+            @auth
             <li class="nav-item {{ Request::url() == url('/branches') ? 'active font-weight-normal' : '' }}">
                 <a class="nav-link" href="{{ route('branches') }}">Branches</a>
             </li>
             <li class="nav-item {{ Request::url() == url('/pr-location') ? 'active font-weight-normal' : '' }}">
                 <a class="nav-link" href="{{ route('pr-location') }}">PR Location</a>
             </li>
+            @endauth
         </ul>
 
-        @if (!session()->exists('username'))
-            <form class="form-inline" method="POST" action="{{ route('login') }}">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-
-                <div class="form-group no-gutter">
-                    <input type="text" class="form-control" placeholder="Username" id="usernameField" name="username" min="1" max="30">
-                    <span id="tokenInfoText" style="display: none;">
-                        <a href="https://github.com/settings/tokens" data-toggle="tooltip" data-placement="bottom" title="Link to GitHub-Token page">Token</a>
-                    </span>
-                </div>
-
-                <div class="form-group no-gutter">
-                    <input type="password" class="form-control" placeholder="Password" id="passwordField" name="password" required min="1" max="255">
-                </div>
-
-                <div class="form-check no-gutter">
-                    <input type="checkbox" class="form-check-input" id="tokenCheckbox" name="tokenCheck" onclick="onClickEvent();">
-                    <label class="form-check-label" for="tokenCheckbox">
-                        <a class="fas fa-key"></a>
-                    </label>
-                </div>
-
-                <button type="submit" class="btn btn-default">Submit</button>
-            </form>
-        @endif
-        @if (session()->exists('username'))
-            <ul class="navbar-nav">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ session()->get('username') }}
+        <ul class="navbar-nav ml-auto">
+        @guest
+            <li class="nav-item">
+                <a id="github-button" class="btn btn-block btn-social btn-github" href="{{ route('login') }}" style="color:white">
+                    <i class="fa fa-github"></i>Sign in with Github
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{{ route('logout') }}">Logout</a>
+            </li>
+        @else
+            <li class="nav-item dropdown">
+                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                    {{ auth()->user()->username }} <span class="caret"></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item"
+                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                        {{ __('Logout') }}
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        {{ csrf_field() }}
+                    </form>
                 </div>
             </li>
-            </ul>
-        @endif
+        @endguest
+        </ul>
     </div>
 </nav>
 
@@ -107,7 +91,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="http://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/4.12.0/bootstrap-social.min.css">
 
 
 @section('js')

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: ilyestascou
- * Date: 05.11.18
- * Time: 17:13
- */
 
 namespace App\Client;
 
@@ -22,56 +16,10 @@ class CallManager
     const ORGANISATION = 'plentymarkets';
 
     private $client;
-    public $username;
 
-
-    function __construct ($userPW, bool $token)
+    function __construct ()
     {
-        $this->client = new GithubClient($userPW, $token);
-        $this->username = $this->getUsername();
-    }
-
-    public function getUsername ()
-    {
-        $data = $this->client->requester('/user');
-        $jsonData = $this->getDecode($data);
-
-        if ($data->getStatusCode() == 200)
-        {
-            return $jsonData->login;
-        }
-        else {
-            return null;
-        }
-    }
-
-    public function getUserInfo ()
-    {
-        $data = $this->client->requester('/users/' . $this->username);
-        $jsonData = $this->getDecode($data);
-
-        if ($data->getStatusCode() == 200)
-        {
-            return $jsonData;
-        }
-        else {
-            return null;
-        }
-    }
-
-    public function getUserOwnRepo ()
-    {
-        $data = $this->client->requester('/users/' . $this->username . '/repos');
-        $jsonData = $this->getDecode($data);
-
-        if (isset($jsonData))
-        {
-            return $jsonData;
-        }
-        else
-        {
-            return null;
-        }
+        $this->client = new GithubClient(env('TOKEN'), true);
     }
 
     public function getOrgaRepo ()
@@ -94,7 +42,7 @@ class CallManager
 
         ksort($results);
 
-        if (isset($results))
+        if (count($results))
         {
             return $results;
         }
@@ -143,7 +91,7 @@ class CallManager
         //} while (($endPage == 0) ? strpos($paginationString, 'rel="next"') : $page < $endPage);
         //} while ($page < 1);
 
-        if (isset($results))
+        if (count($results))
         {
             return $results;
         }
@@ -155,11 +103,6 @@ class CallManager
 
     public function getBranches($repo)
     {
-        /**
-         * TODO: Pagination schlecht geloest. Bessere Loesung finden! Einzige Alternative: String parsen.. auch shit!
-         * todo: pagination-doWhile als abstrakt auslagern
-         */
-
         $page = 1;
         $results = [];
         do {
@@ -179,7 +122,7 @@ class CallManager
         } while (strpos($paginationString, 'rel="next"'));
 
 
-        if (isset($results))
+        if (count($results))
         {
             return $results;
         }
@@ -227,7 +170,7 @@ class CallManager
             $page++;
         } while (strpos($paginationString, 'rel="next"'));
 
-        if (isset($members))
+        if (count($members))
         {
             return $members;
         }
@@ -249,7 +192,7 @@ class CallManager
      * @param $data
      * @return mixed
      */
-    private function getDecode ($data)
+    private function getDecode($data)
     {
         return json_decode($data->getBody());
     }

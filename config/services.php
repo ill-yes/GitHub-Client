@@ -29,11 +29,11 @@ return [
         'secret' => env('SPARKPOST_SECRET'),
     ],
 
-    'stripe' => [
+    /*'stripe' => [
         'model' => App\User::class,
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
-    ],
+    ],*/
 
     'github' => [
         'redirect' => env("GITHUB_REDIRECT"),

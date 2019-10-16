@@ -27,6 +27,8 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+        $schedule->command('cron:branches')
+            ->twiceDaily(12, 20);
         $schedule->command('cron:pullrequests')
             ->twiceDaily(12, 20);
     }

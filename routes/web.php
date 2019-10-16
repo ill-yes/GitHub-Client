@@ -14,11 +14,17 @@
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('login/github', 'AuthController@redirectToProvider')->name("login");
+//Route::get('login/github', 'AuthController@redirectToProvider')->name("login");
 //Route::get('login/github/callback', 'AuthController@handleProviderCallback')->name("auth.callback");
 
-Route::get('login/github/callback', 'SocialiteController@callback');
-Route::get('/', 'SocialiteController@redirect');
+Route::view('/', 'pages.home')->name('home');
+
+Route::get('/login/github', 'SocialiteController@redirect')->name("login");
+Route::get('/login/github/callback', 'SocialiteController@handleCallback');
+
+Route::post('/logout', 'SocialiteController@logout')->name('logout');
+//Route::get('/logout', 'SocialiteController@logout')->name('logout');
+
 //Route::get('/', 'LoginController@initLogin');
 
 
@@ -30,10 +36,18 @@ Route::get('/', 'SocialiteController@redirect');
 
 
 // API CALLS
-Route::get('/user', 'AuthController@userInfoCall')->name('user');
-Route::get('/repository', 'AuthController@ownRepoCall')->name('repository');
+//Route::get('/user', 'AuthController@userInfoCall')->name('user');
+//Route::get('/repository', 'AuthController@ownRepoCall')->name('repository');
 
-Route::get('/branches', 'AuthController@branchView')->name('branches');
-Route::post('/branches', 'AuthController@deadBranchesCall')->name('getDeadBranches');
+Route::get('/branches', 'LoginController@branchView')->name('branches');
+Route::post('/branches', 'LoginController@deadBranchesCall')->name('getDeadBranches');
 
-Route::get('/pr-location', 'AuthController@prLocationCall')->name('pr-location');
+Route::get('/pr-location', 'LoginController@prLocationCall')->name('pr-location');
+
+//Auth::routes();
+//
+//Route::get('/home', 'HomeController@index')->name('home');
+//
+//Auth::routes();
+//
+//Route::get('/home', 'HomeController@index')->name('home');

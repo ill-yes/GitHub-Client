@@ -38,19 +38,19 @@
                             <li class="nav-item {{ Request::url() == url('/') ? 'active font-weight-normal' : '' }}">
                                 <a class="nav-link" href="/">Home</a>
                             </li>
-                            <li class="nav-item {{ Request::url() == url('/user') ? 'active font-weight-normal' : '' }}">
-                                <a class="nav-link" href="{{ route('user') }}">User</a>
-                            </li>
-                            <li class="nav-item {{ Request::url() == url('/repository') ? 'active font-weight-normal' : '' }}">
-                                <a class="nav-link" href="{{ route('repository') }}">Repository</a>
-                            </li>
-                            <li class="nav-item {{ Request::url() == url('/branches') ? 'active font-weight-normal' : '' }}">
-                                <a class="nav-link" href="{{ route('branches') }}">Branches</a>
-                            </li>
+                            {{--<li class="nav-item {{ Request::url() == url('/user') ? 'active font-weight-normal' : '' }}">--}}
+                                {{--<a class="nav-link" href="{{ route('user') }}">User</a>--}}
+                            {{--</li>--}}
+                            {{--<li class="nav-item {{ Request::url() == url('/repository') ? 'active font-weight-normal' : '' }}">--}}
+                                {{--<a class="nav-link" href="{{ route('repository') }}">Repository</a>--}}
+                            {{--</li>--}}
+                            {{--<li class="nav-item {{ Request::url() == url('/branches') ? 'active font-weight-normal' : '' }}">--}}
+                                {{--<a class="nav-link" href="{{ route('branches') }}">Branches</a>--}}
+                            {{--</li>--}}
 
-                            <li class="nav-item {{ Request::url() == url('/pr-location') ? 'active font-weight-normal' : '' }}">
-                                <a class="nav-link" href="{{ route('pr-location') }}">PR Location</a>
-                            </li>
+                            {{--<li class="nav-item {{ Request::url() == url('/pr-location') ? 'active font-weight-normal' : '' }}">--}}
+                                {{--<a class="nav-link" href="{{ route('pr-location') }}">PR Location</a>--}}
+                            {{--</li>--}}
                         @endauth
                     </ul>
 
@@ -61,27 +61,28 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                             </li>
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
+                            {{--@if (Route::has('register'))--}}
+                                {{--<li class="nav-item">--}}
+                                    {{--<a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>--}}
+                                {{--</li>--}}
+                            {{--@endif--}}
 
                         @else
+
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                    <a class="dropdown-item"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
+                                        {{ csrf_field() }}
                                     </form>
                                 </div>
                             </li>
