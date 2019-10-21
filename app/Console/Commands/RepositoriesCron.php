@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Client\CallManager;
+use App\Github\Client\CallManager;
 use App\Models\Repository;
 use Illuminate\Console\Command;
 
