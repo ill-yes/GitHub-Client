@@ -24,14 +24,11 @@ class GithubClient
     function __construct ($auth, bool $token)
     {
         $this->auth = $auth;
-
+        $this->method = "Basic";
+        
         if ($token)
         {
             $this->method = "token";
-        }
-        else
-        {
-            $this->method = "Basic";
         }
     }
 
