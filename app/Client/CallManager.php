@@ -68,10 +68,7 @@ class CallManager
         {
             return $jsonData;
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
     public function getOrgaRepo ()
@@ -98,10 +95,7 @@ class CallManager
         {
             return $results;
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
     public function getPullRequests (String $repo, int $amountOfDays)
