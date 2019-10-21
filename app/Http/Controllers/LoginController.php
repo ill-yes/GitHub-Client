@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Client\CallManager;
+use App\Github\Client\CallManager;
 use App\Models\Pullrequest;
 use App\Models\Repository;
 use App\Services\FilterCallData;
@@ -12,6 +12,11 @@ use Illuminate\View\View;
 
 class LoginController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     /**
      * Returns the view for the "branches"-tab
@@ -39,7 +44,7 @@ class LoginController extends Controller
      */
     public function deadBranchesCall(Request $request)
     {
-        $repository = (String) $request->get('repository');
+        $repository = (string) $request->get('repository');
         $amountOfDays = (int) $request->get('days');
 
         if (!isset($repository) || !isset($amountOfDays))
@@ -74,7 +79,7 @@ class LoginController extends Controller
      */
     public function prLocationCall():View
     {
-        if (Pullrequest::count() > 0)
+       if (Pullrequest::count() > 0)
         {
             return view('pages.pr-location', [
                 'lastUpdate' => Carbon::parse(Pullrequest::first()->created_at)->format('l - H:i, d.m.Y'),

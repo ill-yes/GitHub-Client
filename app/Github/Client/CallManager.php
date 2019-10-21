@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Client;
+namespace App\Github\Client;
 
 use Carbon\Carbon;
 
@@ -19,9 +19,14 @@ class CallManager
 
     function __construct ()
     {
-        $this->client = new GithubClient(env('TOKEN'), true);
+        $this->client = new GithubClient();
     }
 
+    /**
+     * Gets all repositories of an organisation
+     *
+     * @return array|null
+     */
     public function getOrgaRepo ()
     {
         $page = 1;
@@ -46,12 +51,17 @@ class CallManager
         {
             return $results;
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
+    /**
+     * Gets all pullrequests
+     *
+     * @param String $repo
+     * @param int $amountOfDays
+     * @return array|null
+     */
     public function getPullRequests (String $repo, int $amountOfDays)
     {
         $page = 1;
@@ -95,12 +105,16 @@ class CallManager
         {
             return $results;
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
+    /**
+     * Gets all branches
+     *
+     * @param $repo
+     * @return array|null
+     */
     public function getBranches($repo)
     {
         $page = 1;
@@ -126,12 +140,17 @@ class CallManager
         {
             return $results;
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
+    /**
+     * Returns the location of the merged pullrequest
+     *
+     * @param $repo
+     * @param $mergedCommitSha
+     * @return string|null
+     */
     public function compareCommitWithBranch($repo, $mergedCommitSha)
     {
         $data = $this->client->requester('/repos/' . self::ORGANISATION . '/' . $repo . '/compare/' . self::STABLE . '...' . $mergedCommitSha);
@@ -152,6 +171,12 @@ class CallManager
         return null;
     }
 
+    /**
+     * Gets a list of team-members
+     *
+     * @param $teamId
+     * @return array|null
+     */
     public function getTeamMembers($teamId)
     {
         $page = 1;
@@ -174,12 +199,17 @@ class CallManager
         {
             return $members;
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
+    /**
+     * Calculates whether the date lies within the specified interval.
+     *
+     * @param $mergedDate
+     * @param int $days
+     * @return bool
+     */
     private function dateCalc($mergedDate, int $days)
     {
         $date = Carbon::parse($mergedDate)->format('Y-m-d');

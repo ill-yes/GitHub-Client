@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Client;
+namespace App\Github\Client;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -13,42 +13,27 @@ class GithubClient
 {
     private static $URL = 'https://api.github.com';
 
-    private $auth;
-    private $method;
+    private $apiKey;
 
-    /**
-     * GithubClient constructor.
-     * @param $auth
-     * @param bool $token
-     */
-    function __construct ($auth, bool $token)
+
+    function __construct ()
     {
-        $this->auth = $auth;
-
-        if ($token)
-        {
-            $this->method = "token";
-        }
-        else
-        {
-            $this->method = "Basic";
-        }
+        $this->apiKey = env('TOKEN');
     }
 
     /**
      * @param $endpoint
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface|null
      */
     public function requester ($endpoint)
     {
-
         try
         {
             $client = new Client();
             $response = $client->get(self::$URL . $endpoint,
                 [
                     'headers' => [
-                        'Authorization' => "Token" . ' ' . $this->auth
+                        'Authorization' => "Token" . ' ' . $this->apiKey
                     ],
                 ]);
         }
@@ -59,6 +44,4 @@ class GithubClient
 
         return $response;
     }
-
-
 }

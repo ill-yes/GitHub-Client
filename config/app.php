@@ -161,6 +161,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         * Own Service Providers
+         */
+        \App\Kanbanize\Providers\KanbanizeServiceProvider::class,
     ],
 
     /*

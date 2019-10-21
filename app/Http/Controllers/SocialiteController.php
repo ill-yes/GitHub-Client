@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SocialUser;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

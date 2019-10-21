@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Client\CallManager;
+use App\Github\Client\CallManager;
 use App\Models\SocialUser;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 
