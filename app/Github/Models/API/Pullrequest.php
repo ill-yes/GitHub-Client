@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\API;
+namespace App\Github\Models\API;
 
 class Pullrequest
 {

@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\Client\CallManager;
-use App\Services\FilterCallData;
+use App\Github\Client\CallManager;
+use App\Github\Services\FilterCallData;
 use Carbon\Carbon;
 use Tests\TestCase;
 

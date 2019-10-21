@@ -23,7 +23,7 @@ Route::post('/logout', 'SocialiteController@logout')->name('logout');
 
 
 // API CALLS
-Route::get('/branches', 'LoginController@branchView')->name('branches');
-Route::post('/branches', 'LoginController@deadBranchesCall')->name('getDeadBranches');
+Route::get('/branches', 'HomeController@branchView')->name('branches');
+Route::post('/branches', 'HomeController@deadBranchesCall')->name('getDeadBranches');
 
-Route::get('/pr-location', 'LoginController@prLocationCall')->name('pr-location');
+Route::get('/pr-location', 'HomeController@prLocationCall')->name('pr-location');

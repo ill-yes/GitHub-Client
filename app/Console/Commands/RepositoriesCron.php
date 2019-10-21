@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Github\Client\CallManager;
-use App\Models\Repository;
+use App\Github\Models\Repository;
 use Illuminate\Console\Command;
 
 class RepositoriesCron extends Command

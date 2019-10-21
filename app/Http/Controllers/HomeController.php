@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Github\Client\CallManager;
-use App\Models\Pullrequest;
-use App\Models\Repository;
-use App\Services\FilterCallData;
+use App\Github\Models\Pullrequest;
+use App\Github\Models\Repository;
+use App\Github\Services\FilterCallData;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class LoginController extends Controller
+class HomeController extends Controller
 {
 
     public function __construct()

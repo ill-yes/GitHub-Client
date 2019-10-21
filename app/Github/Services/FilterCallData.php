@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Github\Services;
 
 use Carbon\Carbon;
-
 
 class FilterCallData
 {

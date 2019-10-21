@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Github\Client\CallManager;
-use App\Models\Pullrequest;
-use App\Services\FilterCallData;
+use App\Github\Models\Pullrequest;
+use App\Github\Services\FilterCallData;
 use Illuminate\Console\Command;
 
 class PullrequestsCron extends Command
