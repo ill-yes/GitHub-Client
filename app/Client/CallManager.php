@@ -36,7 +36,7 @@ class CallManager
             {
                 $results[$orgaRepo->name] = true;
             }
-
+            
             $page++;
         } while (strpos($paginationString, 'rel="next"'));
 
@@ -46,10 +46,7 @@ class CallManager
         {
             return $results;
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
     public function getPullRequests (String $repo, int $amountOfDays)
@@ -88,17 +85,13 @@ class CallManager
             }
             $page++;
         } while (strpos($paginationString, 'rel="next"') && $inDate);
-        //} while (($endPage == 0) ? strpos($paginationString, 'rel="next"') : $page < $endPage);
-        //} while ($page < 1);
 
         if (count($results))
         {
             return $results;
         }
-        else
-        {
-            return null;
-        }
+      
+       return null;
     }
 
     public function getBranches($repo)
@@ -121,15 +114,11 @@ class CallManager
             $page++;
         } while (strpos($paginationString, 'rel="next"'));
 
-
         if (count($results))
         {
             return $results;
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
     public function compareCommitWithBranch($repo, $mergedCommitSha)
@@ -174,10 +163,7 @@ class CallManager
         {
             return $members;
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
     private function dateCalc($mergedDate, int $days)
