@@ -18,9 +18,9 @@
 
                             <div class="form-group" style=" margin-right: 5px">
                                 <select class="form-control" id="repository_name">
-                                    @if(isset($orgaRepo))
-                                        @foreach ($orgaRepo as $key=>$value)
-                                            <option value={{ $key }}>{{ $key }}</option>
+                                    @if(isset($repositories))
+                                        @foreach ($repositories as $repo)
+                                            <option value={{ $repo->name }}>{{ $repo->name }}</option>
                                         @endforeach
                                     @else
                                         <option>No repository found!</option>

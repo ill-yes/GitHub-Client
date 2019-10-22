@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: ilyestascou
- * Date: 2019-01-08
- * Time: 11:46
- */
 
-namespace App\Services;
-
+namespace App\Github\Services;
 
 use Carbon\Carbon;
 

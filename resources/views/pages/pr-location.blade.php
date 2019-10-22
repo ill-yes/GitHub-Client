@@ -50,11 +50,11 @@
                                             <td>{{ \Carbon\Carbon::parse($pull['merged_at'])->format('Y-m-d, H:i | l') }}</td>
                                             <td><a href="{{ $pull['user_url'] }}" target="_blank">{{ $pull['user_login'] }}</a></td>
 
-                                                @if($pull['location'] == \App\Client\CallManager::BETA)
+                                                @if($pull['location'] == \App\Github\Client\CallManager::BETA)
                                                     <td class="bg-danger" style="text-align: center">{{ $pull['location'] }}</td>
-                                                @elseif($pull['location'] == \App\Client\CallManager::EARLY)
+                                                @elseif($pull['location'] == \App\Github\Client\CallManager::EARLY)
                                                     <td class="bg-warning" style="text-align: center">{{ $pull['location'] }}</td>
-                                                @elseif($pull['location'] == \App\Client\CallManager::STABLE)
+                                                @elseif($pull['location'] == \App\Github\Client\CallManager::STABLE)
                                                     <td class="bg-success" style="text-align: center">{{ $pull['location'] }}</td>
                                                 @else
                                                     <td class="bg-default">{{ $pull['location'] }}</td>

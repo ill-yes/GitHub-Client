@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\Client\CallManager;
-use App\Services\FilterCallData;
+use App\Github\Client\CallManager;
+use App\Github\Services\FilterCallData;
 use Carbon\Carbon;
 use Tests\TestCase;
 
@@ -29,7 +29,7 @@ class FilteredPullrequestsTest extends TestCase
             'plentymarkets:stable7' => true
         ];
 
-        $callMngr = new CallManager($cron['token'], true);
+        $callMngr = new CallManager();
 
         // Date Test
         $pulls = $callMngr->getPullRequests($cron['repository'], $cron['days']);

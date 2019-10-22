@@ -1,17 +1,10 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: ilyestascou
- * Date: 2019-03-07
- * Time: 09:54
- */
 
-namespace App\DB;
-
+namespace App\Github\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PullrequestsModel extends Model
+class Pullrequest extends Model
 {
     protected $table = 'pullrequests';
 

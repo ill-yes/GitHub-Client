@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: ilyestascou
- * Date: 05.11.18
- * Time: 17:13
- */
 
-namespace App\Client;
+namespace App\Github\Client;
 
 use Carbon\Carbon;
 
@@ -22,58 +16,17 @@ class CallManager
     const ORGANISATION = 'plentymarkets';
 
     private $client;
-    public $username;
 
-
-    function __construct ($userPW, bool $token)
+    function __construct ()
     {
-        $this->client = new GithubClient($userPW, $token);
-        $this->username = $this->getUsername();
+        $this->client = new GithubClient();
     }
 
-    public function getUsername ()
-    {
-        $data = $this->client->requester('/user');
-        $jsonData = $this->getDecode($data);
-
-        if ($data->getStatusCode() == 200)
-        {
-            return $jsonData->login;
-        }
-        else {
-            return null;
-        }
-    }
-
-    public function getUserInfo ()
-    {
-        $data = $this->client->requester('/users/' . $this->username);
-        $jsonData = $this->getDecode($data);
-
-        if ($data->getStatusCode() == 200)
-        {
-            return $jsonData;
-        }
-        else {
-            return null;
-        }
-    }
-
-    public function getUserOwnRepo ()
-    {
-        $data = $this->client->requester('/users/' . $this->username . '/repos');
-        $jsonData = $this->getDecode($data);
-
-        if (isset($jsonData))
-        {
-            return $jsonData;
-        }
-        else
-        {
-            return null;
-        }
-    }
-
+    /**
+     * Gets all repositories of an organisation
+     *
+     * @return array|null
+     */
     public function getOrgaRepo ()
     {
         $page = 1;
@@ -94,16 +47,21 @@ class CallManager
 
         ksort($results);
 
-        if (isset($results))
+        if (count($results))
         {
             return $results;
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
+    /**
+     * Gets all pullrequests
+     *
+     * @param String $repo
+     * @param int $amountOfDays
+     * @return array|null
+     */
     public function getPullRequests (String $repo, int $amountOfDays)
     {
         $page = 1;
@@ -143,23 +101,22 @@ class CallManager
         //} while (($endPage == 0) ? strpos($paginationString, 'rel="next"') : $page < $endPage);
         //} while ($page < 1);
 
-        if (isset($results))
+        if (count($results))
         {
             return $results;
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
+    /**
+     * Gets all branches
+     *
+     * @param $repo
+     * @return array|null
+     */
     public function getBranches($repo)
     {
-        /**
-         * TODO: Pagination schlecht geloest. Bessere Loesung finden! Einzige Alternative: String parsen.. auch shit!
-         * todo: pagination-doWhile als abstrakt auslagern
-         */
-
         $page = 1;
         $results = [];
         do {
@@ -179,16 +136,21 @@ class CallManager
         } while (strpos($paginationString, 'rel="next"'));
 
 
-        if (isset($results))
+        if (count($results))
         {
             return $results;
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
+    /**
+     * Returns the location of the merged pullrequest
+     *
+     * @param $repo
+     * @param $mergedCommitSha
+     * @return string|null
+     */
     public function compareCommitWithBranch($repo, $mergedCommitSha)
     {
         $data = $this->client->requester('/repos/' . self::ORGANISATION . '/' . $repo . '/compare/' . self::STABLE . '...' . $mergedCommitSha);
@@ -209,6 +171,12 @@ class CallManager
         return null;
     }
 
+    /**
+     * Gets a list of team-members
+     *
+     * @param $teamId
+     * @return array|null
+     */
     public function getTeamMembers($teamId)
     {
         $page = 1;
@@ -227,16 +195,21 @@ class CallManager
             $page++;
         } while (strpos($paginationString, 'rel="next"'));
 
-        if (isset($members))
+        if (count($members))
         {
             return $members;
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
+    /**
+     * Calculates whether the date lies within the specified interval.
+     *
+     * @param $mergedDate
+     * @param int $days
+     * @return bool
+     */
     private function dateCalc($mergedDate, int $days)
     {
         $date = Carbon::parse($mergedDate)->format('Y-m-d');
@@ -249,7 +222,7 @@ class CallManager
      * @param $data
      * @return mixed
      */
-    private function getDecode ($data)
+    private function getDecode($data)
     {
         return json_decode($data->getBody());
     }
