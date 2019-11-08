@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Discourse\Api\Contracts\ApiHandlerRepositoryContract;
+use App\Discourse\Api\Services\TopicsService;
+use App\Discourse\Repositories\ApiHandlerRepository;
 use App\Github\Client\CallManager;
 use App\Github\Models\Pullrequest;
 use App\Github\Models\Repository;
@@ -15,7 +18,8 @@ class HomeController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        // TODO: Auth wieder aktivieren
+        //$this->middleware('auth');
     }
 
     /**
@@ -79,6 +83,11 @@ class HomeController extends Controller
      */
     public function prLocationCall():View
     {
+
+        $api = new TopicsService();
+        $test = $api->getTeamStatsForAllCategories();
+
+
        if (Pullrequest::count() > 0)
         {
             return view('pages.pr-location', [

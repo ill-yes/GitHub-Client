@@ -164,6 +164,7 @@ return [
         /*
          * Own Service Providers
          */
+        \App\Discourse\Providers\DiscourseServiceProvider::class,
         \App\Kanbanize\Providers\KanbanizeServiceProvider::class,
     ],
 

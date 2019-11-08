@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Kanbanize\Providers;
-
 
 use App\Kanbanize\Contracts\ApiHandlerRepositoryContract;
 use App\Kanbanize\Repositories\ApiHandlerRepository;
