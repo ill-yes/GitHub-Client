@@ -18,7 +18,7 @@ class ApiHandlerRepository implements ApiHandlerRepositoryContract
         $this->client = $client;
     }
 
-    public function getThreadsByCategory($category, $page = 0)
+    public function getThreadsByCategory(string $category, int $page = 0) : array
     {
         $method = "GET";
         $endpoint = "/c/" . $category;
@@ -37,7 +37,7 @@ class ApiHandlerRepository implements ApiHandlerRepositoryContract
         return $topics;
     }
 
-    public function getTopicsFromToday(string $category)
+    public function getTopicsFromToday(string $category) : array
     {
         $todayDate = date_format(new DateTime(), 'Y-m-d');
 

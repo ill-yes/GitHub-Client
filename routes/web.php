@@ -26,4 +26,5 @@ Route::post('/logout', 'SocialiteController@logout')->name('logout');
 Route::get('/branches', 'HomeController@branchView')->name('branches');
 Route::post('/branches', 'HomeController@deadBranchesCall')->name('getDeadBranches');
 
-Route::get('/pr-location', 'HomeController@prLocationCall')->name('pr-location');
+Route::get('/pr-location', 'HomeController@prLocationView')->name('pr-location');
+Route::get('/forum-stats', 'HomeController@forumStatsView')->name('forum-stats');

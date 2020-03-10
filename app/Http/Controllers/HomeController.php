@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Discourse\Api\Contracts\ApiHandlerRepositoryContract;
+use App\Charts\StatsChart;
 use App\Discourse\Api\Services\TopicsService;
-use App\Discourse\Repositories\ApiHandlerRepository;
 use App\Github\Client\CallManager;
 use App\Github\Models\Pullrequest;
 use App\Github\Models\Repository;
@@ -12,6 +11,8 @@ use App\Github\Services\FilterCallData;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Khill\Lavacharts\Charts\PieChart;
+use Khill\Lavacharts\Lavacharts;
 
 class HomeController extends Controller
 {
@@ -81,13 +82,8 @@ class HomeController extends Controller
      * Returns the view for the "pr-location"-tab
      * @return View
      */
-    public function prLocationCall():View
+    public function prLocationView(): View
     {
-
-        $api = new TopicsService();
-        $test = $api->getTeamStatsForAllCategories();
-
-
        if (Pullrequest::count() > 0)
         {
             return view('pages.pr-location', [
@@ -102,5 +98,64 @@ class HomeController extends Controller
                 'error' => 'Database empty!'
             ]);
         }
+    }
+
+    public function forumStatsView(): View
+    {
+        $api = new TopicsService();
+        $categoryTopics = $api->getTeamStatsForAllCategories();
+
+        $amount = [];
+        foreach ($categoryTopics as $category => $topics)
+        {
+            $amount[$category] = count($topics);
+        }
+
+        $labels = array_keys($amount);
+        $stats = array_values($amount);
+
+        $lava = new Lavacharts;
+        $reasons = $lava->DataTable();
+
+        $reasons
+            ->addStringColumn('Categories')
+            ->addNumberColumn('Threads');
+        foreach ($amount as $key => $counts)
+        {
+            $reasons->addRow([$key, $counts]);
+        }
+        /*$reasons->addStringColumn('Reasons')
+            ->addNumberColumn('Percent')
+            ->addRow(array('Check Reviews', 5))
+            ->addRow(array('Watch Trailers', 2))
+            ->addRow(array('See Actors Other Work', 4))
+            ->addRow(array('Settle Argument', 89));*/
+
+
+        $donutchart = $lava->DonutChart('dailyStatsDonut', $reasons, [
+            'title' => 'DonutChart - Daily stats'
+        ]);
+
+        $areaChart = $lava->AreaChart('dailyStatsArea', $reasons, [
+            'title' => 'AreaChart - Daily stats'
+        ]);
+
+        $barChart = $lava->BarChart('dailyStatsBar', $reasons, [
+            'title' => 'BarChart - Daily stats'
+        ]);
+
+        $pieChart = $lava->PieChart('dailyStatsPie', $reasons, [
+            'title' => 'PieChart - Daily stats'
+        ]);
+
+        $lineChart = $lava->LineChart('dailyStatsLine', $reasons, [
+            'title' => 'LineChart - Daily stats'
+        ]);
+
+        //echo $lava->render('dailyTopis');
+
+        return view('pages.forum-stats', [
+            'lava' => $lava
+        ]);
     }
 }

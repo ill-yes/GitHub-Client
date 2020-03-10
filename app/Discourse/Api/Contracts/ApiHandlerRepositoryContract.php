@@ -4,8 +4,8 @@ namespace App\Discourse\Api\Contracts;
 
 interface ApiHandlerRepositoryContract
 {
-    public function getThreadsByCategory($category, $page = 1);
+    public function getThreadsByCategory(string $category, int $page = 1) : array;
 
-    public function getTopicsFromToday(string $category);
+    public function getTopicsFromToday(string $category) : array;
 
 }
