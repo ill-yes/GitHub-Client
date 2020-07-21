@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Chatbot\Providers\ChatbotServiceProvider;
 use App\Discourse\Providers\DiscourseServiceProvider;
 use App\Kanbanize\Providers\KanbanizeServiceProvider;
 use Illuminate\Support\Facades\Schema;
@@ -28,5 +29,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->register(KanbanizeServiceProvider::class);
         $this->app->register(DiscourseServiceProvider::class);
+        $this->app->register(ChatbotServiceProvider::class);
     }
 }
