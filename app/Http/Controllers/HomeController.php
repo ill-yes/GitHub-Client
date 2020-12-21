@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Charts\StatsChart;
+use App\Chatbot\Contracts\ChatInteractionContract;
 use App\Discourse\Api\Services\TopicsService;
 use App\Github\Client\CallManager;
 use App\Github\Models\Pullrequest;
 use App\Github\Models\Repository;
 use App\Github\Services\FilterCallData;
+use App\Kanbanize\Contracts\KanbanizeHandlerContract;
+use App\Kanbanize\Services\KanbanizeToChatService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -29,6 +32,10 @@ class HomeController extends Controller
      */
     public function branchView():View
     {
+        /** @var KanbanizeToChatService $kanbanize */
+        $kanbanize = app(KanbanizeToChatService::class);
+        //$kanbanize->sendLatestTasksToChat();
+
         if (Repository::count() > 0)
         {
             return view('pages.branch', [
