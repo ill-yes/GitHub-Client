@@ -49,6 +49,10 @@
                 <a class="nav-link" href="{{ route('pr-location') }}">PR Location</a>
             </li>
             @endauth
+            <li class="nav-item {{ Request::url() == url('/forum-stats') ? 'active font-weight-normal' : '' }}">
+                <a class="nav-link" href="{{ route('forum-stats') }}">Forum Stats</a>
+            </li>
+
         </ul>
 
         <ul class="navbar-nav ml-auto">

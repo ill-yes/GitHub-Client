@@ -17,16 +17,16 @@ class KanbanizeClient
         $this->apiKey = env('KANBANIZE_KEY');
     }
 
-    public function sendRequest(string $endpoint, array $body, $POST )
+    public function sendRequest(string $method, string $endpoint, array $body)
     {
         try {
             $client = new Client();
-            $response = $client->request(self::$URL . $endpoint,
+            $response = $client->request($method, self::$URL . $endpoint . "/format/json",
                 [
                     'headers' => [
                         'apikey' => $this->apiKey
                     ],
-                    'form_params' => $body,
+                    'json' =>  $body,
                 ]);
 
         } catch (RequestException $e)
@@ -34,6 +34,6 @@ class KanbanizeClient
             $response = $e->getResponse();
         }
 
-        return $response;
+        return json_decode($response->getBody(), true);
     }
 }

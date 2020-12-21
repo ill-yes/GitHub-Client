@@ -1,12 +1,9 @@
 <?php
 
-
-namespace App\Kanbanize\Models\ApiModels;
-
+namespace App\Kanbanize\Models;
 
 class Task
 {
-
     public $taskid; //String
     public $position; //String
     public $type; //String
@@ -28,5 +25,14 @@ class Task
     public $reporter; //String
     public $createdat; //String
     public $updatedat; //String
+    public $customfields;
 
+    public function fill(array $data)
+    {
+        $vars = get_object_vars($this);
+        foreach ($vars as $name => $oldValue)
+        {
+            $this->$name = isset($data[$name]) ? $data[$name] : null;
+        }
+    }
 }
